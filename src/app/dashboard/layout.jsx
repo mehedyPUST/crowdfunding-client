@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 
 const roleAccess = {
     supporter: [
+        '/dashboard/profile',
         '/dashboard',
         '/dashboard/supporter/explore',
         '/dashboard/supporter/my-contributions',
@@ -16,6 +17,7 @@ const roleAccess = {
         '/dashboard/supporter/payment-history',
     ],
     creator: [
+        '/dashboard/profile',
         '/dashboard',
         '/dashboard/creator/add-campaign',
         '/dashboard/creator/my-campaigns',
@@ -23,6 +25,7 @@ const roleAccess = {
         '/dashboard/creator/payment-history',
     ],
     admin: [
+        '/dashboard/profile',
         '/dashboard',
         '/dashboard/admin/manage-users',
         '/dashboard/admin/manage-campaigns',

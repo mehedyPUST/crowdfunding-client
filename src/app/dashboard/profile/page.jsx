@@ -13,7 +13,6 @@ export default function ProfilePage() {
     const [form, setForm] = useState({ name: '', photoURL: '' });
     const [stats, setStats] = useState(null);
 
-    // Password change
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
@@ -47,13 +46,15 @@ export default function ProfilePage() {
         setSaving(true);
         try {
             const res = await api.put('/auth/profile', form);
-            toast.success('Profile updated!');
+            toast.success('Profile updated!', { duration: 3000 });
             setEditing(false);
             const savedUser = JSON.parse(localStorage.getItem('user'));
             savedUser.name = res.data.user.name;
             savedUser.photoURL = res.data.user.photoURL;
             localStorage.setItem('user', JSON.stringify(savedUser));
-            window.location.reload();
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         } catch {
             toast.error('Failed to update');
         } finally {
@@ -81,7 +82,6 @@ export default function ProfilePage() {
         <div className="max-w-3xl mx-auto space-y-6">
             <h1 className="text-2xl font-bold text-slate-800">My Profile</h1>
 
-            {/* Profile Card */}
             <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
                 <div className="h-24 bg-gradient-to-r from-brand-600 via-brand-500 to-accent-600"></div>
                 <div className="px-6 pb-6">
@@ -93,6 +93,7 @@ export default function ProfilePage() {
                                 fill
                                 className="object-cover"
                                 sizes="80px"
+                                priority
                             />
                         </div>
                         <div className="flex-1 pt-2">
@@ -125,7 +126,6 @@ export default function ProfilePage() {
                 </div>
             </div>
 
-            {/* Info Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-3">
                     <Mail className="w-5 h-5 text-brand-600 flex-shrink-0" />
@@ -145,7 +145,6 @@ export default function ProfilePage() {
                 </div>
             </div>
 
-            {/* Activity Summary */}
             {stats && (
                 <div className="bg-white rounded-xl border border-slate-200 p-6">
                     <h3 className="font-semibold text-slate-800 mb-4">Activity Summary</h3>
@@ -169,7 +168,6 @@ export default function ProfilePage() {
                 </div>
             )}
 
-            {/* Password Change Modal */}
             {showPasswordModal && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowPasswordModal(false)}>
                     <div className="bg-white rounded-xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
