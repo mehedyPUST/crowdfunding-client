@@ -139,8 +139,8 @@ export default function ProfilePage() {
                                 onClick={() => (editing ? handleSave() : setEditing(true))}
                                 disabled={saving}
                                 className={`flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition ${editing
-                                        ? 'bg-brand-600 text-white hover:bg-brand-700'
-                                        : 'border border-slate-300 text-slate-600 hover:bg-slate-50'
+                                    ? 'bg-brand-600 text-white hover:bg-brand-700'
+                                    : 'border border-slate-300 text-slate-600 hover:bg-slate-50'
                                     }`}
                             >
                                 {editing ? (

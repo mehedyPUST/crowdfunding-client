@@ -7,7 +7,8 @@ import {
     Home, Search, Heart, CreditCard, History,
     PlusCircle, FileText, Wallet, Users,
     Flag, ClipboardList, ArrowLeftRight, X,
-    User
+    User,
+
 } from 'lucide-react';
 
 const menuItems = {

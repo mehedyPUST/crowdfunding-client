@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Menu, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
-import DashboardSidebar from '../components/DashboardSidebar';
+
 import { useAuth } from '../context/AuthContext';
+import DashboardSidebar from '../components/DashboardSidebar';
 
 const roleAccess = {
     supporter: [
