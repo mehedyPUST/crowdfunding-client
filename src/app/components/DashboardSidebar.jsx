@@ -12,28 +12,31 @@ import {
 
 const menuItems = {
     supporter: [
-        { href: '/dashboard/profile', icon: User, label: 'My Profile' },
+
         { href: '/dashboard/supporter', icon: Home, label: 'Home' },
         { href: '/dashboard/supporter/explore', icon: Search, label: 'Explore Campaigns' },
         { href: '/dashboard/supporter/my-contributions', icon: Heart, label: 'My Contributions' },
         { href: '/dashboard/supporter/purchase-credit', icon: CreditCard, label: 'Purchase Credit' },
         { href: '/dashboard/supporter/payment-history', icon: History, label: 'Payment History' },
+        { href: '/dashboard/profile', icon: User, label: 'My Profile' },
     ],
     creator: [
-        { href: '/dashboard/profile', icon: User, label: 'My Profile' },
+
         { href: '/dashboard/creator', icon: Home, label: 'Home' },
         { href: '/dashboard/creator/add-campaign', icon: PlusCircle, label: 'Add New Campaign' },
         { href: '/dashboard/creator/my-campaigns', icon: FileText, label: 'My Campaigns' },
         { href: '/dashboard/creator/withdrawals', icon: Wallet, label: 'Withdrawals' },
         { href: '/dashboard/creator/payment-history', icon: History, label: 'Payment History' },
+        { href: '/dashboard/profile', icon: User, label: 'My Profile' },
     ],
     admin: [
-        { href: '/dashboard/profile', icon: User, label: 'My Profile' },
+
         { href: '/dashboard/admin', icon: Home, label: 'Home' },
         { href: '/dashboard/admin/manage-users', icon: Users, label: 'Manage Users' },
         { href: '/dashboard/admin/manage-campaigns', icon: ClipboardList, label: 'Manage Campaigns' },
         { href: '/dashboard/admin/withdrawal-requests', icon: ArrowLeftRight, label: 'Withdrawal Requests' },
         { href: '/dashboard/admin/reports', icon: Flag, label: 'Reports' },
+        { href: '/dashboard/profile', icon: User, label: 'My Profile' },
     ],
 };
 
@@ -83,8 +86,8 @@ export default function DashboardSidebar({ isOpen, onClose }) {
                                 href={item.href}
                                 onClick={onClose}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-                                        ? 'bg-brand-50 text-brand-700 shadow-sm'
-                                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+                                    ? 'bg-brand-50 text-brand-700 shadow-sm'
+                                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800'
                                     }`}
                             >
                                 <item.icon className={`w-4 h-4 ${isActive ? 'text-brand-600' : ''}`} />
