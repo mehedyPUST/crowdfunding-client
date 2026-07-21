@@ -1,12 +1,13 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
-
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import { Toaster } from 'react-hot-toast';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import { AuthProvider } from './context/AuthContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,9 +20,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} bg-slate-50 text-slate-800 antialiased`}>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </AuthProvider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );
