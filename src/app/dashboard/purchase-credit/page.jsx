@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { Coins, Check } from 'lucide-react';
+import { Coins } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
@@ -20,36 +20,54 @@ function CheckoutForm({ clientSecret, onSuccess }) {
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        if (!stripe) return;
+
+        stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+            if (paymentIntent?.status === 'succeeded') {
+                setMessage('Payment already completed!');
+                onSuccess(paymentIntent.id);
+            }
+        });
+    }, [stripe, clientSecret, onSuccess]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!stripe || !elements) return;
 
         setLoading(true);
-        const { error, paymentIntent } = await stripe.confirmPayment({
+        const { error } = await stripe.confirmPayment({
             elements,
-            confirmParams: {},
+            confirmParams: {
+                return_url: `${window.location.origin}/dashboard/purchase-credit`,
+            },
         });
 
         if (error) {
             toast.error(error.message);
-        } else if (paymentIntent?.status === 'succeeded') {
-            toast.success('Payment successful!');
-            onSuccess(paymentIntent.id);
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <PaymentElement />
-            <button
-                type="submit"
-                disabled={!stripe || loading}
-                className="w-full bg-brand-600 text-white py-2.5 rounded-lg font-semibold hover:bg-brand-700 transition disabled:opacity-50 text-sm"
-            >
-                {loading ? 'Processing...' : 'Pay Now'}
-            </button>
+            {message && (
+                <div className="bg-brand-50 text-brand-700 border border-brand-200 rounded-lg p-3 text-sm font-medium">
+                    {message}
+                </div>
+            )}
+            {!message && <PaymentElement />}
+            {!message && (
+                <button
+                    type="submit"
+                    disabled={!stripe || loading}
+                    className="w-full bg-brand-600 text-white py-2.5 rounded-lg font-semibold hover:bg-brand-700 transition disabled:opacity-50 text-sm"
+                >
+                    {loading ? 'Processing...' : 'Pay Now'}
+                </button>
+            )}
         </form>
     );
 }
@@ -59,6 +77,31 @@ export default function PurchaseCreditPage() {
     const [selected, setSelected] = useState(null);
     const [clientSecret, setClientSecret] = useState(null);
     const [message, setMessage] = useState('');
+    const [confirming, setConfirming] = useState(false);
+
+    useEffect(() => {
+        // Check for redirected payment success
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentIntent = urlParams.get('payment_intent');
+        const redirectStatus = urlParams.get('redirect_status');
+
+        if (paymentIntent && redirectStatus === 'succeeded') {
+            const pkgId = localStorage.getItem('selectedPackage');
+            if (pkgId && !confirming) {
+                setConfirming(true);
+                api.post('/payments/confirm', { paymentIntentId: paymentIntent, packageId: pkgId })
+                    .then((res) => {
+                        toast.success('Payment successful!');
+                        setMessage(`✅ Credits added! New balance: ${res.data.credits}`);
+                        localStorage.removeItem('selectedPackage');
+                        // Clean URL
+                        window.history.replaceState({}, '', '/dashboard/purchase-credit');
+                    })
+                    .catch(() => toast.error('Failed to confirm payment'))
+                    .finally(() => setConfirming(false));
+            }
+        }
+    }, []);
 
     const handleSelectPackage = async (pkg) => {
         setSelected(pkg);
@@ -67,17 +110,21 @@ export default function PurchaseCreditPage() {
         try {
             const res = await api.post('/payments/create-intent', { packageId: pkg.id });
             setClientSecret(res.data.clientSecret);
+            localStorage.setItem('selectedPackage', pkg.id);
         } catch {
             toast.error('Failed to initialize payment');
         }
     };
 
     const handlePaymentSuccess = async (paymentIntentId) => {
+        const pkgId = localStorage.getItem('selectedPackage') || selected?.id;
         try {
-            const res = await api.post('/payments/confirm', { paymentIntentId, packageId: selected.id });
+            const res = await api.post('/payments/confirm', { paymentIntentId, packageId: pkgId });
+            toast.success('Payment successful!');
             setMessage(`✅ ${selected.credits} credits added! New balance: ${res.data.credits}`);
             setSelected(null);
             setClientSecret(null);
+            localStorage.removeItem('selectedPackage');
         } catch {
             toast.error('Failed to confirm payment');
         }
@@ -90,6 +137,12 @@ export default function PurchaseCreditPage() {
             {message && (
                 <div className="bg-brand-50 text-brand-700 border border-brand-200 rounded-lg p-4 mb-6 text-sm font-medium">
                     {message}
+                </div>
+            )}
+
+            {confirming && (
+                <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
                 </div>
             )}
 
