@@ -12,7 +12,6 @@ import {
 
 const menuItems = {
     supporter: [
-
         { href: '/dashboard/supporter', icon: Home, label: 'Home' },
         { href: '/dashboard/supporter/explore', icon: Search, label: 'Explore Campaigns' },
         { href: '/dashboard/supporter/my-contributions', icon: Heart, label: 'My Contributions' },
@@ -21,7 +20,6 @@ const menuItems = {
         { href: '/dashboard/profile', icon: User, label: 'My Profile' },
     ],
     creator: [
-
         { href: '/dashboard/creator', icon: Home, label: 'Home' },
         { href: '/dashboard/creator/add-campaign', icon: PlusCircle, label: 'Add New Campaign' },
         { href: '/dashboard/creator/my-campaigns', icon: FileText, label: 'My Campaigns' },
@@ -30,7 +28,6 @@ const menuItems = {
         { href: '/dashboard/profile', icon: User, label: 'My Profile' },
     ],
     admin: [
-
         { href: '/dashboard/admin', icon: Home, label: 'Home' },
         { href: '/dashboard/admin/manage-users', icon: Users, label: 'Manage Users' },
         { href: '/dashboard/admin/manage-campaigns', icon: ClipboardList, label: 'Manage Campaigns' },
@@ -51,8 +48,7 @@ export default function DashboardSidebar({ isOpen, onClose }) {
                 <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={onClose} />
             )}
 
-            <aside className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-slate-200 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:z-auto ${isOpen ? 'translate-x-0' : '-translate-x-full'
-                }`}>
+            <aside className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-slate-200 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:z-auto ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className="flex items-center justify-between p-5 border-b border-slate-200">
                     <Link href="/" className="text-lg font-bold text-slate-800">CrowdFund</Link>
                     <button onClick={onClose} className="lg:hidden text-slate-500">
