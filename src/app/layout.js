@@ -2,13 +2,12 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { AuthProvider } from './context/AuthContext';
-import ChatBot from './components/ChatBot';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,9 +24,8 @@ export default function RootLayout({ children }) {
           <Navbar />
           <main>{children}</main>
           <Footer />
+          <Toaster position="top-right" />
         </AuthProvider>
-        <Toaster position="top-right" />
-        <ChatBot />
       </body>
     </html>
   );
