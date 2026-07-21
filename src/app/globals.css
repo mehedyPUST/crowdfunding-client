@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* Emerald - Primary */
   --color-brand-50: #ecfdf5;
   --color-brand-100: #d1fae5;
   --color-brand-200: #a7f3d0;
@@ -12,6 +13,7 @@
   --color-brand-800: #065f46;
   --color-brand-900: #064e3b;
 
+  /* Purple - Accent */
   --color-accent-50: #f5f3ff;
   --color-accent-100: #ede9fe;
   --color-accent-200: #ddd6fe;
