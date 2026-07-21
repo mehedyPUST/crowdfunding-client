@@ -11,57 +11,44 @@ export function AuthProvider({ children }) {
 
     const api = axios.create({
         baseURL: process.env.NEXT_PUBLIC_API_URL,
+        withCredentials: true,
     });
 
-    // Set token in axios headers
-    api.interceptors.request.use((config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    });
-
-    // Check localStorage for existing token on mount
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const savedUser = localStorage.getItem('user');
-        if (token && savedUser) {
-            setUser(JSON.parse(savedUser));
-        }
-        setLoading(false);
+        checkAuth();
     }, []);
 
+    const checkAuth = async () => {
+        try {
+            const res = await api.get('/auth/me');
+            setUser(res.data.user);
+        } catch {
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const login = async (email, password) => {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, { email, password });
-        const { token, user } = res.data;
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        setUser(user);
-        return user;
+        const res = await api.post('/auth/login', { email, password });
+        setUser(res.data.user);
+        return res.data.user;
     };
 
     const register = async (data) => {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, data);
-        const { token, user } = res.data;
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        setUser(user);
-        return user;
+        const res = await api.post('/auth/register', data);
+        setUser(res.data.user);
+        return res.data.user;
     };
 
     const googleLogin = async (credential) => {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/google-login`, { credential });
-        const { token, user } = res.data;
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        setUser(user);
-        return user;
+        const res = await api.post('/auth/google-login', { credential });
+        setUser(res.data.user);
+        return res.data.user;
     };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+    const logout = async () => {
+        await api.post('/auth/logout');
         setUser(null);
     };
 
