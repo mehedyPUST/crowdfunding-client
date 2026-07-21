@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '@/app/context/AuthContext';
 import { Trash2, Edit3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -88,8 +88,8 @@ export default function ManageUsersPage() {
                                 <td className="px-4 py-3 text-slate-500 hidden sm:table-cell truncate max-w-[150px]">{u.email}</td>
                                 <td className="px-4 py-3">
                                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                                            u.role === 'creator' ? 'bg-blue-100 text-blue-700' :
-                                                'bg-green-100 text-green-700'
+                                        u.role === 'creator' ? 'bg-blue-100 text-blue-700' :
+                                            'bg-green-100 text-green-700'
                                         }`}>
                                         {u.role}
                                     </span>

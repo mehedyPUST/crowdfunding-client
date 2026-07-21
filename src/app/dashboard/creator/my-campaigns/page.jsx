@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/app/context/AuthContext';
+
 
 export default function MyCampaignsPage() {
     const { api } = useAuth();
@@ -91,8 +92,8 @@ export default function MyCampaignsPage() {
                                     <td className="px-4 py-3 hidden md:table-cell">{camp.raisedAmount || 0}</td>
                                     <td className="px-4 py-3">
                                         <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${camp.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                                camp.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                                    'bg-red-100 text-red-700'
+                                            camp.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                                                'bg-red-100 text-red-700'
                                             }`}>
                                             {camp.status}
                                         </span>

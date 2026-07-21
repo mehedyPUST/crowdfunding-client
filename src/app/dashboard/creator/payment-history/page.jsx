@@ -1,7 +1,8 @@
 'use client';
 
+import { useAuth } from '@/app/context/AuthContext';
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+
 
 export default function PaymentHistoryPage() {
     const { api, user } = useAuth();

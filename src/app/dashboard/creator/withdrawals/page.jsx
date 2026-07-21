@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 import toast from 'react-hot-toast';
 
 export default function WithdrawalsPage() {
@@ -44,8 +44,11 @@ export default function WithdrawalsPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (raised < 200) return toast.error('Minimum 200 credits required');
-        if (Number(form.withdrawalCredits) > raised) return toast.error('Insufficient credits');
+        if (raised < 200) return toast.error('Minimum 200 credits required to withdraw');
+        if (Number(form.withdrawalCredits) > raised) return toast.error('Insufficient raised credits');
+        if (Number(form.withdrawalCredits) < 200) return toast.error('Minimum withdrawal is 200 credits');
+        if (!form.accountNumber) return toast.error('Account number is required');
+
         try {
             await api.post('/withdrawals', form);
             toast.success('Withdrawal request submitted!');
@@ -67,9 +70,9 @@ export default function WithdrawalsPage() {
                     <p className="text-2xl font-bold text-brand-600">{raised}</p>
                 </div>
                 <div className="bg-white rounded-xl border border-slate-200 p-5">
-                    <p className="text-sm text-slate-500 mb-1">Withdrawal Amount ($)</p>
+                    <p className="text-sm text-slate-500 mb-1">Available for Withdrawal ($)</p>
                     <p className="text-2xl font-bold text-slate-800">${(raised / 20).toFixed(2)}</p>
-                    <p className="text-xs text-slate-400 mt-1">20 Credits = $1</p>
+                    <p className="text-xs text-slate-400 mt-1">20 Credits = $1 | Min 200 Credits ($10)</p>
                 </div>
             </div>
 
@@ -99,6 +102,7 @@ export default function WithdrawalsPage() {
                         readOnly
                         className="w-full px-3 py-2 border border-slate-200 bg-slate-50 rounded-lg text-sm text-slate-600"
                     />
+                    <p className="text-xs text-slate-400 mt-1">20 Credits = $1 (auto-calculated)</p>
                 </div>
 
                 <div>
@@ -128,11 +132,16 @@ export default function WithdrawalsPage() {
                 </div>
 
                 {raised >= 200 ? (
-                    <button type="submit" className="w-full bg-brand-600 text-white py-2.5 rounded-lg font-semibold hover:bg-brand-700 transition text-sm">
+                    <button
+                        type="submit"
+                        className="w-full bg-brand-600 text-white py-2.5 rounded-lg font-semibold hover:bg-brand-700 transition text-sm"
+                    >
                         Withdraw
                     </button>
                 ) : (
-                    <p className="text-center text-red-500 font-medium text-sm">Insufficient credit</p>
+                    <div className="text-center text-red-500 font-medium text-sm py-2 bg-red-50 rounded-lg">
+                        Insufficient credit — Minimum 200 credits ($10) required
+                    </div>
                 )}
             </form>
 
@@ -149,17 +158,17 @@ export default function WithdrawalsPage() {
                                     <th className="text-left px-4 py-3 font-medium text-slate-600">Date</th>
                                     <th className="text-left px-4 py-3 font-medium text-slate-600">Credits</th>
                                     <th className="text-left px-4 py-3 font-medium text-slate-600">Amount</th>
-                                    <th className="text-left px-4 py-3 font-medium text-slate-600">Method</th>
+                                    <th className="text-left px-4 py-3 font-medium text-slate-600 hidden sm:table-cell">Method</th>
                                     <th className="text-left px-4 py-3 font-medium text-slate-600">Status</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
                                 {withdrawals.map((w, i) => (
                                     <tr key={i} className="hover:bg-slate-50">
-                                        <td className="px-4 py-3">{new Date(w.requestDate).toLocaleDateString()}</td>
+                                        <td className="px-4 py-3 text-xs">{new Date(w.requestDate).toLocaleDateString()}</td>
                                         <td className="px-4 py-3">{w.withdrawalCredits}</td>
-                                        <td className="px-4 py-3">${w.withdrawalAmount}</td>
-                                        <td className="px-4 py-3">{w.paymentSystem}</td>
+                                        <td className="px-4 py-3 text-brand-600 font-medium">${w.withdrawalAmount}</td>
+                                        <td className="px-4 py-3 hidden sm:table-cell">{w.paymentSystem}</td>
                                         <td className="px-4 py-3">
                                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${w.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                                                 }`}>

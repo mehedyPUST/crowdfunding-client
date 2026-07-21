@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useAuth } from '../../context/AuthContext';
+
 import { Upload, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/app/context/AuthContext';
 
 const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
 

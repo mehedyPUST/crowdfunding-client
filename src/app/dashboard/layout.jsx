@@ -2,16 +2,33 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useAuth } from '../context/AuthContext';
-import DashboardSidebar from '../components/DashboardSidebar';
 import { Menu, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
+import DashboardSidebar from '../components/DashboardSidebar';
+import { useAuth } from '../context/AuthContext';
 
-// Define role-based route access
 const roleAccess = {
-    supporter: ['/dashboard', '/dashboard/explore', '/dashboard/my-contributions', '/dashboard/purchase-credit', '/dashboard/payment-history'],
-    creator: ['/dashboard', '/dashboard/add-campaign', '/dashboard/my-campaigns', '/dashboard/withdrawals', '/dashboard/payment-history'],
-    admin: ['/dashboard', '/dashboard/manage-users', '/dashboard/manage-campaigns', '/dashboard/withdrawal-requests', '/dashboard/reports'],
+    supporter: [
+        '/dashboard',
+        '/dashboard/supporter/explore',
+        '/dashboard/supporter/my-contributions',
+        '/dashboard/supporter/purchase-credit',
+        '/dashboard/supporter/payment-history',
+    ],
+    creator: [
+        '/dashboard',
+        '/dashboard/creator/add-campaign',
+        '/dashboard/creator/my-campaigns',
+        '/dashboard/creator/withdrawals',
+        '/dashboard/creator/payment-history',
+    ],
+    admin: [
+        '/dashboard',
+        '/dashboard/admin/manage-users',
+        '/dashboard/admin/manage-campaigns',
+        '/dashboard/admin/withdrawal-requests',
+        '/dashboard/admin/reports',
+    ],
 };
 
 export default function DashboardLayout({ children }) {
@@ -20,16 +37,22 @@ export default function DashboardLayout({ children }) {
     const pathname = usePathname();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
+    // ALL hooks here, before any return
     useEffect(() => {
         if (!loading && !user) {
             router.push('/login');
         }
     }, [user, loading, router]);
 
-    // Check role access
-    const allowedRoutes = user ? (roleAccess[user.role] || []) : [];
-    const hasAccess = allowedRoutes.some(route => pathname === route || pathname.startsWith(route + '/'));
+    useEffect(() => {
+        if (pathname === '/dashboard' && user) {
+            if (user.role === 'supporter') router.push('/dashboard/supporter/explore');
+            else if (user.role === 'creator') router.push('/dashboard/creator/my-campaigns');
+            else if (user.role === 'admin') router.push('/dashboard/admin/manage-users');
+        }
+    }, [pathname, user, router]);
 
+    // Now conditional returns
     if (loading || !user) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -38,7 +61,9 @@ export default function DashboardLayout({ children }) {
         );
     }
 
-    // Show Access Denied for unauthorized route
+    const allowedRoutes = user ? (roleAccess[user.role] || []) : [];
+    const hasAccess = allowedRoutes.some(route => pathname === route || pathname.startsWith(route + '/'));
+
     if (!hasAccess && pathname !== '/dashboard') {
         return (
             <div className="min-h-screen flex bg-slate-50">
@@ -70,7 +95,6 @@ export default function DashboardLayout({ children }) {
     return (
         <div className="min-h-screen flex bg-slate-50">
             <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
             <div className="flex-1 flex flex-col min-w-0">
                 <div className="bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-3 lg:pl-6">
                     <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-600">
@@ -80,7 +104,6 @@ export default function DashboardLayout({ children }) {
                         Dashboard / <span className="capitalize">{user?.role}</span>
                     </span>
                 </div>
-
                 <div className="p-4 lg:p-6 flex-1 overflow-auto">
                     {children}
                 </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '@/app/context/AuthContext';
 import { Trash2, Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -113,7 +113,7 @@ export default function ManageCampaignsPage() {
                                     <td className="px-4 py-3 font-medium truncate max-w-[200px]">{c.title}</td>
                                     <td className="px-4 py-3 hidden sm:table-cell">
                                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${c.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                                c.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
+                                            c.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
                                             }`}>{c.status}</span>
                                     </td>
                                     <td className="px-4 py-3">

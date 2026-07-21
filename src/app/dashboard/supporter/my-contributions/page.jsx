@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useAuth } from '@/app/context/AuthContext';
 
 export default function MyContributionsPage() {
     const { api } = useAuth();
