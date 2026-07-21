@@ -19,6 +19,7 @@ function PurchaseContent() {
     const searchParams = useSearchParams();
     const [loading, setLoading] = useState(null);
     const [verifying, setVerifying] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(null);
 
     // Handle Stripe redirect
     useEffect(() => {
@@ -28,16 +29,40 @@ function PurchaseContent() {
         if (status === 'success' && sessionId && !verifying) {
             setVerifying(true);
             const pkgId = localStorage.getItem('pendingPackage');
+
+            console.log('Verifying payment:', { sessionId, pkgId });
+
             api.post('/payments/confirm', {
                 paymentIntentId: sessionId,
                 packageId: pkgId,
             })
                 .then((res) => {
-                    toast.success('Payment successful! Credits added.');
+                    console.log('Confirm response:', res.data);
+
+                    if (res.data.alreadyCredited) {
+                        toast.success('Credits already added!');
+                    } else {
+                        toast.success(`${res.data.addedCredits} credits added!`);
+                    }
+
+                    setSuccessMessage({
+                        credits: res.data.addedCredits || packages.find(p => p.id === pkgId)?.credits || 0,
+                        newBalance: res.data.credits,
+                    });
+
+                    localStorage.removeItem('pendingPackage');
+
+                    // Clean URL after 2 seconds
+                    setTimeout(() => {
+                        router.replace('/dashboard/supporter/purchase-credit');
+                    }, 2000);
+                })
+                .catch((err) => {
+                    console.error('Confirm error:', err.response?.data);
+                    toast.error(err.response?.data?.error || 'Payment verification failed');
                     localStorage.removeItem('pendingPackage');
                     router.replace('/dashboard/supporter/purchase-credit');
                 })
-                .catch(() => toast.error('Payment verification failed'))
                 .finally(() => setVerifying(false));
         }
 
@@ -51,10 +76,13 @@ function PurchaseContent() {
     const handlePayment = async (pkg) => {
         setLoading(pkg.id);
         localStorage.setItem('pendingPackage', pkg.id);
+
         try {
             const res = await api.post('/payments/create-checkout', { packageId: pkg.id });
+            console.log('Checkout URL:', res.data.url);
             window.location.href = res.data.url;
         } catch (err) {
+            console.error('Payment init error:', err.response?.data);
             toast.error('Failed to initialize payment');
             setLoading(null);
             localStorage.removeItem('pendingPackage');
@@ -91,6 +119,23 @@ function PurchaseContent() {
                     </div>
                 </div>
             </div>
+
+            {/* Success Message */}
+            {successMessage && (
+                <div className="bg-gradient-to-r from-brand-50 to-green-50 border border-brand-200 rounded-xl p-6 animate-in fade-in slide-in-from-top-2">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center">
+                            <Check className="w-6 h-6 text-brand-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-slate-800">Payment Successful!</h3>
+                            <p className="text-sm text-slate-600">
+                                {successMessage.credits} credits added. New balance: 🪙 {successMessage.newBalance}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Features */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
