@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { Menu, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
-
-import { useAuth } from '../context/AuthContext';
+import { Menu, LogOut } from 'lucide-react';
 import DashboardSidebar from '../components/DashboardSidebar';
+import NotificationBell from '../components/NotificationBell';
+import AccessDenied from '../components/AccessDenied';
+import { useAuth } from '../context/AuthContext';
 
 const roleAccess = {
     supporter: [
@@ -35,17 +36,68 @@ const roleAccess = {
     ],
 };
 
+// ✅ Moved outside of component
+function DashboardShell({ user, logout, sidebarOpen, setSidebarOpen, mainContent }) {
+    return (
+        <div className="min-h-screen flex flex-col lg:grid lg:grid-cols-[240px_1fr] lg:grid-rows-[60px_1fr]">
+
+            {/* Mobile Header */}
+            <header className="lg:hidden flex items-center justify-between p-4 border-b bg-white sticky top-0 z-30">
+                <button onClick={() => setSidebarOpen(true)} className="text-slate-600">
+                    <Menu className="w-5 h-5" />
+                </button>
+                <Link href="/" className="font-bold text-slate-800">CrowdFund</Link>
+                <div className="flex items-center gap-3">
+                    <span className="text-xs text-brand-600 font-medium">🪙 {user.credits || 0}</span>
+                    <NotificationBell />
+                </div>
+            </header>
+
+            {/* Grid 1: Logo (Desktop) */}
+            <div className="hidden lg:flex items-center justify-center bg-white border-b border-r border-slate-200 sticky top-0 left-0 z-30">
+                <Link href="/" className="text-xl font-bold text-slate-800">CrowdFund</Link>
+            </div>
+
+            {/* Grid 2: Top Bar (Desktop) */}
+            <div className="hidden lg:flex items-center justify-between bg-white border-b border-slate-200 sticky top-0 z-20 px-6">
+                <span className="text-sm text-slate-500 capitalize">Dashboard / {user.role}</span>
+                <div className="flex items-center gap-4">
+                    <span className="text-sm font-medium text-brand-600">🪙 {user.credits || 0}</span>
+                    <NotificationBell />
+                    <button onClick={logout} className="flex items-center gap-1 text-sm text-slate-600 hover:text-red-500">
+                        <LogOut className="w-4 h-4" /> Logout
+                    </button>
+                </div>
+            </div>
+
+            {/* Grid 3: Sidebar */}
+            <div className="hidden lg:block sticky left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto bg-white border-r border-slate-200">
+                <DashboardSidebar />
+            </div>
+
+            {sidebarOpen && (
+                <div className="lg:hidden fixed inset-0 z-50">
+                    <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
+                    <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+                </div>
+            )}
+
+            {/* Grid 4: Main Content */}
+            <main className="flex-1 overflow-y-auto p-4 lg:p-6 bg-slate-50">
+                {mainContent}
+            </main>
+        </div>
+    );
+}
+
 export default function DashboardLayout({ children }) {
-    const { user, loading } = useAuth();
+    const { user, loading, logout } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    // ALL hooks here, before any return
     useEffect(() => {
-        if (!loading && !user) {
-            router.push('/login');
-        }
+        if (!loading && !user) router.push('/login');
     }, [user, loading, router]);
 
     useEffect(() => {
@@ -56,7 +108,6 @@ export default function DashboardLayout({ children }) {
         }
     }, [pathname, user, router]);
 
-    // Now conditional returns
     if (loading || !user) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -65,53 +116,28 @@ export default function DashboardLayout({ children }) {
         );
     }
 
-    const allowedRoutes = user ? (roleAccess[user.role] || []) : [];
+    const allowedRoutes = roleAccess[user.role] || [];
     const hasAccess = allowedRoutes.some(route => pathname === route || pathname.startsWith(route + '/'));
 
     if (!hasAccess && pathname !== '/dashboard') {
         return (
-            <div className="min-h-screen flex bg-slate-50">
-                <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                <div className="flex-1 flex flex-col min-w-0">
-                    <div className="bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-3 lg:pl-6">
-                        <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-600">
-                            <Menu className="w-5 h-5" />
-                        </button>
-                        <span className="text-sm text-slate-500">Dashboard</span>
-                    </div>
-                    <div className="flex-1 flex items-center justify-center p-6">
-                        <div className="text-center max-w-md">
-                            <ShieldAlert className="w-16 h-16 text-red-400 mx-auto mb-4" />
-                            <h1 className="text-2xl font-bold text-slate-800 mb-2">Access Denied</h1>
-                            <p className="text-slate-500 mb-6">
-                                You do not have permission to access this page as a <span className="capitalize font-medium">{user?.role}</span>.
-                            </p>
-                            <Link href="/dashboard" className="bg-brand-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-brand-700 transition">
-                                Go to Dashboard
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <DashboardShell
+                user={user}
+                logout={logout}
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+                mainContent={<AccessDenied role={user?.role} />}
+            />
         );
     }
 
     return (
-        <div className="min-h-screen flex bg-slate-50">
-            <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-            <div className="flex-1 flex flex-col min-w-0">
-                <div className="bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-3 lg:pl-6">
-                    <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-600">
-                        <Menu className="w-5 h-5" />
-                    </button>
-                    <span className="text-sm text-slate-500">
-                        Dashboard / <span className="capitalize">{user?.role}</span>
-                    </span>
-                </div>
-                <div className="p-4 lg:p-6 flex-1 overflow-auto">
-                    {children}
-                </div>
-            </div>
-        </div>
+        <DashboardShell
+            user={user}
+            logout={logout}
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            mainContent={children}
+        />
     );
 }

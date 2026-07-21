@@ -1,4 +1,7 @@
+'use client';
+
 import { Inter } from 'next/font/google';
+import { usePathname } from 'next/navigation';
 import './globals.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -11,19 +14,17 @@ import 'swiper/css/pagination';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
-  title: 'CrowdFund - Fuel Your Ideas',
-  description: 'Crowdfunding platform to turn ideas into reality',
-};
-
 export default function RootLayout({ children }) {
+  const pathname = usePathname();
+  const isDashboard = pathname.startsWith('/dashboard');
+
   return (
     <html lang="en">
       <body className={`${inter.className} bg-slate-50 text-slate-800 antialiased`}>
         <AuthProvider>
-          <Navbar />
+          {!isDashboard && <Navbar />}
           <main>{children}</main>
-          <Footer />
+          {!isDashboard && <Footer />}
           <Toaster position="top-right" />
         </AuthProvider>
       </body>
