@@ -34,15 +34,16 @@ export default function DashboardHome() {
 
         if (user.role === 'admin') {
             Promise.all([
-                api.get('/users?role=supporter'),
-                api.get('/users?role=creator'),
-                api.get('/users'),
+                api.get('/auth/users?role=supporter'),
+                api.get('/auth/users?role=creator'),
+                api.get('/auth/users'),
             ]).then(([supRes, creRes, allRes]) => {
                 const allUsers = allRes.data;
                 setStats({
                     supporters: supRes.data.length,
                     creators: creRes.data.length,
                     totalCredits: allUsers.reduce((sum, u) => sum + (u.credits || 0), 0),
+                    totalPayments: allUsers.length,
                 });
             }).catch(() => { });
         }
@@ -50,7 +51,9 @@ export default function DashboardHome() {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold text-slate-800 mb-6">Welcome, {user?.name}!</h1>
+            <h1 className="text-2xl font-bold text-slate-800 mb-6">
+                Welcome, {user?.name}!
+            </h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white rounded-xl border border-slate-200 p-5">
@@ -106,15 +109,15 @@ export default function DashboardHome() {
                     {user?.role === 'admin' && (
                         <>
                             <div className="bg-white rounded-xl border border-slate-200 p-5">
-                                <p className="text-sm text-slate-500 mb-1">Supporters</p>
+                                <p className="text-sm text-slate-500 mb-1">Total Supporters</p>
                                 <p className="text-2xl font-bold text-slate-800">{stats.supporters}</p>
                             </div>
                             <div className="bg-white rounded-xl border border-slate-200 p-5">
-                                <p className="text-sm text-slate-500 mb-1">Creators</p>
+                                <p className="text-sm text-slate-500 mb-1">Total Creators</p>
                                 <p className="text-2xl font-bold text-slate-800">{stats.creators}</p>
                             </div>
                             <div className="bg-white rounded-xl border border-slate-200 p-5">
-                                <p className="text-sm text-slate-500 mb-1">Total Credits</p>
+                                <p className="text-sm text-slate-500 mb-1">Total Credits in System</p>
                                 <p className="text-2xl font-bold text-brand-600">{stats.totalCredits}</p>
                             </div>
                         </>
