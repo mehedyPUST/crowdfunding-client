@@ -22,7 +22,6 @@ export default function ChatBot() {
     const sendMessage = async () => {
         if (!input.trim()) return;
 
-        // Check if user is logged in
         if (!user) {
             setMessages((prev) => [
                 ...prev,
@@ -39,11 +38,10 @@ export default function ChatBot() {
         setLoading(true);
 
         try {
-            const token = localStorage.getItem('token');
             const res = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_URL}/chatbot`,
                 { message: userMsg },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { withCredentials: true }
             );
             setMessages((prev) => [...prev, { role: 'bot', text: res.data.reply }]);
         } catch {
