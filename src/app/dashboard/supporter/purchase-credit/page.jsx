@@ -30,6 +30,12 @@ function PurchaseContent() {
             setVerifying(true);
             const pkgId = localStorage.getItem('pendingPackage');
 
+            if (!pkgId) {
+                toast.error('No pending payment found');
+                router.replace('/dashboard/supporter/purchase-credit');
+                return;
+            }
+
             console.log('Verifying payment:', { sessionId, pkgId });
 
             api.post('/payments/confirm', {
@@ -38,6 +44,7 @@ function PurchaseContent() {
             })
                 .then((res) => {
                     console.log('Confirm response:', res.data);
+                    localStorage.removeItem('pendingPackage');
 
                     if (res.data.alreadyCredited) {
                         toast.success('Credits already added!');
@@ -50,11 +57,9 @@ function PurchaseContent() {
                         newBalance: res.data.credits,
                     });
 
-                    localStorage.removeItem('pendingPackage');
-
-                    // Clean URL after 2 seconds
+                    // Force reload to update credits everywhere
                     setTimeout(() => {
-                        router.replace('/dashboard/supporter/purchase-credit');
+                        window.location.href = '/dashboard/supporter/purchase-credit';
                     }, 2000);
                 })
                 .catch((err) => {
@@ -69,6 +74,11 @@ function PurchaseContent() {
         if (status === 'cancelled') {
             toast.error('Payment cancelled');
             localStorage.removeItem('pendingPackage');
+            router.replace('/dashboard/supporter/purchase-credit');
+        }
+
+        // Clean URL params on fresh load
+        if (!status && !sessionId && searchParams.toString()) {
             router.replace('/dashboard/supporter/purchase-credit');
         }
     }, [searchParams]);
@@ -156,7 +166,7 @@ function PurchaseContent() {
                 {packages.map((pkg) => (
                     <div
                         key={pkg.id}
-                        onClick={() => handlePayment(pkg)}
+                        onClick={() => !loading && handlePayment(pkg)}
                         className={`relative bg-white rounded-2xl border-2 p-6 transition-all cursor-pointer hover:shadow-xl hover:-translate-y-1 ${pkg.popular
                                 ? 'border-brand-400 shadow-brand-500/10 shadow-lg'
                                 : 'border-slate-200 hover:border-brand-300'
@@ -189,8 +199,7 @@ function PurchaseContent() {
                             <p className="text-xs text-slate-400">one-time payment</p>
                         </div>
 
-                        <button
-                            disabled={loading === pkg.id}
+                        <div
                             className={`mt-4 w-full py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 ${pkg.popular
                                     ? 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-md hover:shadow-lg'
                                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -203,7 +212,7 @@ function PurchaseContent() {
                                     Buy Now <ArrowRight className="w-4 h-4" />
                                 </>
                             )}
-                        </button>
+                        </div>
                     </div>
                 ))}
             </div>
