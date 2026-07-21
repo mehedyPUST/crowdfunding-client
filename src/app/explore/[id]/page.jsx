@@ -1,16 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
 import { Clock, Target, User, Gift, ArrowLeft } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import toast from 'react-hot-toast';
 
 export default function ExploreDetailsPage() {
     const { id } = useParams();
+    const { user } = useAuth();
+    const router = useRouter();
     const [campaign, setCampaign] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [amount, setAmount] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/campaigns/${id}`)
@@ -18,6 +24,41 @@ export default function ExploreDetailsPage() {
             .catch(() => { })
             .finally(() => setLoading(false));
     }, [id]);
+
+    const handleContribute = async () => {
+        if (!user) {
+            router.push('/login');
+            return;
+        }
+        if (!amount || Number(amount) < 1) {
+            return toast.error('Enter a valid amount');
+        }
+        if (Number(amount) > user.credits) {
+            return toast.error('Insufficient credits');
+        }
+
+        setSubmitting(true);
+        const token = localStorage.getItem('token');
+        try {
+            await axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/contributions`,
+                {
+                    campaignId: campaign._id,
+                    campaignTitle: campaign.title,
+                    amount: Number(amount),
+                    creatorEmail: campaign.creatorEmail,
+                    creatorName: campaign.creatorName,
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            toast.success('Contribution submitted!');
+            router.push('/dashboard/supporter/my-contributions');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Contribution failed');
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -92,13 +133,50 @@ export default function ExploreDetailsPage() {
                     </div>
                 )}
 
-                <div className="text-center">
-                    <Link
-                        href="/login"
-                        className="inline-block bg-brand-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-brand-700 transition"
-                    >
-                        Login to Contribute
-                    </Link>
+                {/* Contribute Section */}
+                <div className="bg-white rounded-xl border border-slate-200 p-6 text-center">
+                    {user ? (
+                        user.role === 'supporter' ? (
+                            <div>
+                                <h2 className="font-semibold text-slate-800 mb-3">Make a Contribution</h2>
+                                <p className="text-sm text-slate-500 mb-3">Your Credits: 🪙 {user?.credits || 0}</p>
+                                <div className="flex gap-3 max-w-sm mx-auto">
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={user?.credits || 0}
+                                        value={amount}
+                                        onChange={(e) => setAmount(e.target.value)}
+                                        placeholder="Amount"
+                                        className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-500"
+                                    />
+                                    <button
+                                        onClick={handleContribute}
+                                        disabled={submitting}
+                                        className="bg-brand-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-brand-700 transition disabled:opacity-50 text-sm"
+                                    >
+                                        {submitting ? 'Sending...' : 'Contribute'}
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <h2 className="font-semibold text-slate-800 mb-3">Campaign Details</h2>
+                                <p className="text-slate-500 text-sm">Only supporters can contribute to campaigns.</p>
+                            </div>
+                        )
+                    ) : (
+                        <div>
+                            <h2 className="font-semibold text-slate-800 mb-3">Want to Contribute?</h2>
+                            <p className="text-slate-500 text-sm mb-4">Login as a supporter to back this campaign</p>
+                            <Link
+                                href="/login"
+                                className="inline-block bg-brand-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-brand-700 transition"
+                            >
+                                Login to Contribute
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
