@@ -8,6 +8,7 @@ import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { AuthProvider } from './context/AuthContext';
+import ChatBot from './components/ChatBot';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }) {
           <Footer />
         </AuthProvider>
         <Toaster position="top-right" />
+        <ChatBot />
       </body>
     </html>
   );
