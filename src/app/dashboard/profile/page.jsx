@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useAuth } from '../../context/AuthContext';
+
 import {
     Mail, Shield, Coins, Calendar, Edit3, Save, X, Lock, Eye, EyeOff, User
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import ProfileSkeleton from '@/app/components/ProfileSkeleton';
+
+import { useAuth } from '@/app/context/AuthContext';
 
 export default function ProfilePage() {
     const { user, api } = useAuth();
@@ -166,8 +167,8 @@ export default function ProfilePage() {
                                 whileHover={{ scale: 1.03 }}
                                 whileTap={{ scale: 0.97 }}
                                 className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${editing
-                                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-200'
-                                        : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+                                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-200'
+                                    : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
                                     }`}
                             >
                                 {editing ? (

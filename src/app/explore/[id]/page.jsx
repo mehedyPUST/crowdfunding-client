@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useAuth } from '../../../context/AuthContext';
+
 import { Clock, Target, User, Search, ChevronLeft, ChevronRight, Coins, Send, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import CampaignCardSkeleton from '@/app/components/CampaignCardSkeleton';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { useAuth } from '@/app/context/AuthContext';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -263,8 +264,8 @@ export default function SupporterExplorePage() {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${currentPage === i + 1
-                                            ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-200'
-                                            : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+                                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-200'
+                                        : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
                                         }`}
                                 >
                                     {i + 1}
