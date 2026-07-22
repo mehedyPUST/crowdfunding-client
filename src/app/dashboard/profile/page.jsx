@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-
 import {
     Mail, Shield, Coins, Calendar, Edit3, Save, X, Lock, Eye, EyeOff, User
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-
 import { useAuth } from '@/app/context/AuthContext';
 import ProfileSkeleton from '@/app/components/ProfileSkeleton';
 
@@ -91,13 +89,13 @@ export default function ProfilePage() {
         }
     };
 
-    const inputClasses = "w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 transition-all";
+    const inputClasses = "w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-300 dark:focus:ring-amber-600 focus:border-amber-400 dark:focus:border-amber-500 transition-all bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500";
 
     const infoCards = [
-        { icon: Mail, label: 'Email', value: user?.email, color: 'text-amber-500', bg: 'bg-amber-50' },
-        { icon: Shield, label: 'Role', value: user?.role, color: 'text-emerald-500', bg: 'bg-emerald-50', capitalize: true },
-        { icon: Coins, label: 'Available Credits', value: `🪙 ${user?.credits || 0}`, color: 'text-amber-500', bg: 'bg-amber-50', bold: true },
-        { icon: Calendar, label: 'Member Since', value: new Date(user?.createdAt || Date.now()).toLocaleDateString(), color: 'text-emerald-500', bg: 'bg-emerald-50' },
+        { icon: Mail, label: 'Email', value: user?.email, color: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20' },
+        { icon: Shield, label: 'Role', value: user?.role, color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20', capitalize: true },
+        { icon: Coins, label: 'Available Credits', value: `🪙 ${user?.credits || 0}`, color: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', bold: true },
+        { icon: Calendar, label: 'Member Since', value: new Date(user?.createdAt || Date.now()).toLocaleDateString(), color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
     ];
 
     if (loading) {
@@ -106,27 +104,18 @@ export default function ProfilePage() {
 
     return (
         <div className="max-w-3xl mx-auto space-y-6">
-            <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-            >
-                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+                <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                     <User className="w-6 h-6 text-amber-500" />
                     My Profile
                 </h1>
             </motion.div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm"
-            >
-                <div className="h-28 bg-gradient-to-r from-amber-500 via-orange-400 to-amber-500"></div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                <div className="h-28 bg-gradient-to-r from-amber-500 via-orange-400 to-amber-500 dark:from-amber-600 dark:via-orange-500 dark:to-amber-600"></div>
                 <div className="px-6 pb-6">
                     <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 -mt-12">
-                        <div className="relative w-24 h-24 rounded-full border-4 border-white overflow-hidden bg-white shadow-md">
+                        <div className="relative w-24 h-24 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-700 shadow-md">
                             <Image
                                 src={user?.photoURL || `https://ui-avatars.com/api/?name=${user?.name}&background=f59e0b&color=fff&size=96`}
                                 alt={user?.name || 'User'}
@@ -139,61 +128,26 @@ export default function ProfilePage() {
                         <div className="flex-1 pt-3">
                             {editing ? (
                                 <div className="space-y-2">
-                                    <input
-                                        type="text"
-                                        value={form.name}
-                                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                        className={inputClasses}
-                                        placeholder="Name"
-                                    />
-                                    <input
-                                        type="url"
-                                        value={form.photoURL}
-                                        onChange={(e) => setForm({ ...form, photoURL: e.target.value })}
-                                        className={inputClasses}
-                                        placeholder="Photo URL"
-                                    />
+                                    <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClasses} placeholder="Name" />
+                                    <input type="url" value={form.photoURL} onChange={(e) => setForm({ ...form, photoURL: e.target.value })} className={inputClasses} placeholder="Photo URL" />
                                 </div>
                             ) : (
                                 <div>
-                                    <h2 className="text-xl font-bold text-gray-800">{user?.name}</h2>
-                                    <p className="text-sm text-gray-500 capitalize">{user?.role}</p>
+                                    <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{user?.name}</h2>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{user?.role}</p>
                                 </div>
                             )}
                         </div>
                         <div className="flex gap-2 pt-2 sm:pt-0">
-                            <motion.button
-                                onClick={() => (editing ? handleSave() : setEditing(true))}
-                                disabled={saving}
-                                whileHover={{ scale: 1.03 }}
-                                whileTap={{ scale: 0.97 }}
-                                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${editing
-                                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-200'
-                                    : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
-                                    }`}
-                            >
-                                {editing ? (
-                                    <>
-                                        <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save'}
-                                    </>
-                                ) : (
-                                    <>
-                                        <Edit3 className="w-4 h-4" /> Edit
-                                    </>
-                                )}
+                            <motion.button onClick={() => (editing ? handleSave() : setEditing(true))} disabled={saving} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${editing ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white shadow-md shadow-amber-200 dark:shadow-amber-900/30' : 'border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}>
+                                {editing ? <><Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save'}</> : <><Edit3 className="w-4 h-4" /> Edit</>}
                             </motion.button>
                             {editing && (
-                                <button
-                                    onClick={() => setEditing(false)}
-                                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium border border-rose-300 text-rose-500 hover:bg-rose-50 transition-colors"
-                                >
+                                <button onClick={() => setEditing(false)} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium border border-rose-300 dark:border-rose-700 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors">
                                     <X className="w-4 h-4" /> Cancel
                                 </button>
                             )}
-                            <button
-                                onClick={() => setShowPasswordModal(true)}
-                                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
-                            >
+                            <button onClick={() => setShowPasswordModal(true)} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <Lock className="w-4 h-4" /> Password
                             </button>
                         </div>
@@ -201,20 +155,15 @@ export default function ProfilePage() {
                 </div>
             </motion.div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {infoCards.map((card, i) => (
-                    <div key={i} className="bg-white rounded-2xl border border-gray-200 p-5 flex items-center gap-4 hover:shadow-sm transition-shadow">
+                    <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 flex items-center gap-4 hover:shadow-sm transition-shadow">
                         <div className={`w-10 h-10 rounded-xl ${card.bg} flex items-center justify-center flex-shrink-0`}>
                             <card.icon className={`w-5 h-5 ${card.color}`} />
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500">{card.label}</p>
-                            <p className={`text-sm ${card.bold ? 'font-bold text-amber-600' : 'font-medium text-gray-800'} ${card.capitalize ? 'capitalize' : ''}`}>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{card.label}</p>
+                            <p className={`text-sm ${card.bold ? 'font-bold text-amber-600 dark:text-amber-400' : 'font-medium text-gray-800 dark:text-gray-200'} ${card.capitalize ? 'capitalize' : ''}`}>
                                 {card.value}
                             </p>
                         </div>
@@ -223,42 +172,37 @@ export default function ProfilePage() {
             </motion.div>
 
             {stats && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 0.3 }}
-                    className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm"
-                >
-                    <h3 className="font-semibold text-gray-800 mb-4">Activity Summary</h3>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+                    <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-4">Activity Summary</h3>
                     <div className="grid grid-cols-2 gap-4">
                         {user?.role === 'creator' && (
                             <>
-                                <div className="text-center p-4 bg-amber-50 rounded-xl border border-amber-100">
-                                    <p className="text-3xl font-bold text-amber-600">{stats.campaigns}</p>
-                                    <p className="text-xs text-gray-500 mt-1">Total Campaigns</p>
+                                <div className="text-center p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
+                                    <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{stats.campaigns}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Total Campaigns</p>
                                 </div>
-                                <div className="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                                    <p className="text-3xl font-bold text-emerald-600">{stats.raised} 🪙</p>
-                                    <p className="text-xs text-gray-500 mt-1">Credits Raised</p>
+                                <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800">
+                                    <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{stats.raised} 🪙</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Credits Raised</p>
                                 </div>
                             </>
                         )}
                         {user?.role === 'supporter' && (
                             <>
-                                <div className="text-center p-4 bg-amber-50 rounded-xl border border-amber-100">
-                                    <p className="text-3xl font-bold text-amber-600">{stats.contributions}</p>
-                                    <p className="text-xs text-gray-500 mt-1">Total Contributions</p>
+                                <div className="text-center p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
+                                    <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{stats.contributions}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Total Contributions</p>
                                 </div>
-                                <div className="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                                    <p className="text-3xl font-bold text-emerald-600">{stats.contributed} 🪙</p>
-                                    <p className="text-xs text-gray-500 mt-1">Credits Contributed</p>
+                                <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800">
+                                    <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{stats.contributed} 🪙</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Credits Contributed</p>
                                 </div>
                             </>
                         )}
                         {user?.role === 'admin' && (
-                            <div className="text-center p-4 bg-amber-50 rounded-xl border border-amber-100 col-span-2">
-                                <p className="text-3xl font-bold text-amber-600">{stats.totalUsers}</p>
-                                <p className="text-xs text-gray-500 mt-1">Total Users</p>
+                            <div className="text-center p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800 col-span-2">
+                                <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{stats.totalUsers}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Total Users</p>
                             </div>
                         )}
                     </div>
@@ -267,86 +211,30 @@ export default function ProfilePage() {
 
             <AnimatePresence>
                 {showPasswordModal && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-                        onClick={() => setShowPasswordModal(false)}
-                    >
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            transition={{ duration: 0.25, ease: "easeOut" }}
-                            onClick={(e) => e.stopPropagation()}
-                            className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-200"
-                        >
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowPasswordModal(false)}>
+                        <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ duration: 0.25, ease: "easeOut" }} onClick={(e) => e.stopPropagation()} className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-200 dark:border-gray-700">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-bold text-gray-800">Change Password</h3>
-                                <button
-                                    onClick={() => setShowPasswordModal(false)}
-                                    className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
+                                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Change Password</h3>
+                                <button onClick={() => setShowPasswordModal(false)} className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"><X className="w-4 h-4" /></button>
                             </div>
                             <form onSubmit={handlePasswordChange} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Current Password</label>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Current Password</label>
                                     <div className="relative">
-                                        <input
-                                            type={showCurrent ? 'text' : 'password'}
-                                            required
-                                            value={passwordForm.currentPassword}
-                                            onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                                            className={`${inputClasses} pr-10`}
-                                            placeholder="Enter current password"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowCurrent(!showCurrent)}
-                                            className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
-                                        >
-                                            {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                        </button>
+                                        <input type={showCurrent ? 'text' : 'password'} required value={passwordForm.currentPassword} onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })} className={`${inputClasses} pr-10`} placeholder="Enter current password" />
+                                        <button type="button" onClick={() => setShowCurrent(!showCurrent)} className="absolute right-3 top-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">{showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">New Password</label>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">New Password</label>
                                     <div className="relative">
-                                        <input
-                                            type={showNew ? 'text' : 'password'}
-                                            required
-                                            value={passwordForm.newPassword}
-                                            onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                                            className={`${inputClasses} pr-10`}
-                                            placeholder="Min 6 characters"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowNew(!showNew)}
-                                            className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
-                                        >
-                                            {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                        </button>
+                                        <input type={showNew ? 'text' : 'password'} required value={passwordForm.newPassword} onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })} className={`${inputClasses} pr-10`} placeholder="Min 6 characters" />
+                                        <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-3 top-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">{showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
                                     </div>
                                 </div>
                                 <div className="flex gap-3 pt-1">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPasswordModal(false)}
-                                        className="flex-1 py-2.5 border border-gray-300 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <motion.button
-                                        type="submit"
-                                        disabled={changingPassword}
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="flex-1 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-sm font-semibold shadow-md shadow-amber-200 hover:shadow-lg hover:shadow-amber-200/60 disabled:opacity-50 transition-all"
-                                    >
+                                    <button type="button" onClick={() => setShowPasswordModal(false)} className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Cancel</button>
+                                    <motion.button type="submit" disabled={changingPassword} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-amber-200 dark:shadow-amber-900/30 hover:shadow-lg hover:shadow-amber-200/60 dark:hover:shadow-amber-900/40 disabled:opacity-50 transition-all">
                                         {changingPassword ? 'Changing...' : 'Change Password'}
                                     </motion.button>
                                 </div>

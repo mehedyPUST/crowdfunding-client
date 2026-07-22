@@ -24,35 +24,28 @@ export default function PaymentHistoryPage() {
                     const res = await api.get('/withdrawals/my');
                     setWithdrawals(res.data);
                 }
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
+            } catch (err) { console.error(err); }
+            finally { setLoading(false); }
         };
         fetchData();
     }, [user]);
 
     const statusBadge = (status) => ({
-        approved: 'bg-emerald-100 text-emerald-700',
-        pending: 'bg-amber-100 text-amber-700',
-        rejected: 'bg-rose-100 text-rose-700',
-    }[status] || 'bg-gray-100 text-gray-700');
+        approved: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400',
+        pending: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
+        rejected: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400',
+    }[status] || 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300');
 
     const rowVariants = {
         hidden: { opacity: 0, x: -20 },
-        visible: (i) => ({
-            opacity: 1,
-            x: 0,
-            transition: { delay: i * 0.05, duration: 0.3 }
-        }),
+        visible: (i) => ({ opacity: 1, x: 0, transition: { delay: i * 0.05, duration: 0.3 } }),
     };
 
     if (loading) {
         return (
             <div>
-                <Skeleton width={240} height={32} className="mb-6" />
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <Skeleton width={240} height={32} className="mb-6" baseColor="#e5e7eb" highlightColor="#f3f4f6" />
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <TableRowSkeleton cols={5} rows={4} />
                 </div>
             </div>
@@ -61,13 +54,8 @@ export default function PaymentHistoryPage() {
 
     return (
         <div>
-            <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="mb-6"
-            >
-                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                     <History className="w-6 h-6 text-amber-500" />
                     Payment History
                 </h1>
@@ -76,48 +64,33 @@ export default function PaymentHistoryPage() {
             {user?.role === 'supporter' && (
                 <>
                     {payments.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm"
-                        >
-                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gray-100 mb-6">
-                                <CreditCard className="w-10 h-10 text-gray-400" />
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-12 text-center shadow-sm">
+                            <div className="relative inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 mb-6">
+                                <CreditCard className="w-12 h-12 text-amber-400 dark:text-amber-500" />
                             </div>
-                            <h2 className="text-lg font-semibold text-gray-700 mb-2">No Payments Yet</h2>
-                            <p className="text-gray-500">Purchase credits to start supporting campaigns!</p>
+                            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">No Payments Yet</h2>
+                            <p className="text-gray-500 dark:text-gray-400">Purchase credits to start supporting campaigns!</p>
                         </motion.div>
                     ) : (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm"
-                        >
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
                             <table className="w-full text-sm">
-                                <thead className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-gray-200">
+                                <thead className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-b border-gray-200 dark:border-gray-700">
                                     <tr>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Date</th>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Package</th>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Credits</th>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Amount</th>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 hidden sm:table-cell">Transaction ID</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Date</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Package</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Credits</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Amount</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400 hidden sm:table-cell">Transaction ID</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
+                                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                                     {payments.map((p, i) => (
-                                        <motion.tr
-                                            key={i}
-                                            variants={rowVariants}
-                                            initial="hidden"
-                                            animate="visible"
-                                            custom={i}
-                                            className="hover:bg-gray-50/50 transition-colors"
-                                        >
-                                            <td className="px-4 py-3 text-xs text-gray-600">{new Date(p.date).toLocaleDateString()}</td>
-                                            <td className="px-4 py-3 text-gray-700">{p.credits} Credits</td>
-                                            <td className="px-4 py-3 font-semibold text-emerald-600">{p.credits} 🪙</td>
-                                            <td className="px-4 py-3 text-amber-600 font-semibold">${p.amount}</td>
-                                            <td className="px-4 py-3 text-xs text-gray-400 hidden sm:table-cell truncate max-w-[100px] font-mono">{p.paymentIntentId}</td>
+                                        <motion.tr key={i} variants={rowVariants} initial="hidden" animate="visible" custom={i} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                            <td className="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">{new Date(p.date).toLocaleDateString()}</td>
+                                            <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{p.credits} Credits</td>
+                                            <td className="px-4 py-3 font-semibold text-emerald-600 dark:text-emerald-400">{p.credits} 🪙</td>
+                                            <td className="px-4 py-3 text-amber-600 dark:text-amber-400 font-semibold">${p.amount}</td>
+                                            <td className="px-4 py-3 text-xs text-gray-400 dark:text-gray-500 hidden sm:table-cell truncate max-w-[100px] font-mono">{p.paymentIntentId}</td>
                                         </motion.tr>
                                     ))}
                                 </tbody>
@@ -130,52 +103,33 @@ export default function PaymentHistoryPage() {
             {user?.role === 'creator' && (
                 <>
                     {withdrawals.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm"
-                        >
-                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gray-100 mb-6">
-                                <Wallet className="w-10 h-10 text-gray-400" />
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-12 text-center shadow-sm">
+                            <div className="relative inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 mb-6">
+                                <Wallet className="w-12 h-12 text-emerald-400 dark:text-emerald-500" />
                             </div>
-                            <h2 className="text-lg font-semibold text-gray-700 mb-2">No Withdrawals Yet</h2>
-                            <p className="text-gray-500">Request a withdrawal when you have enough credits!</p>
+                            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">No Withdrawals Yet</h2>
+                            <p className="text-gray-500 dark:text-gray-400">Request a withdrawal when you have enough credits!</p>
                         </motion.div>
                     ) : (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm"
-                        >
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
                             <table className="w-full text-sm">
-                                <thead className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-gray-200">
+                                <thead className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-b border-gray-200 dark:border-gray-700">
                                     <tr>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Date</th>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Credits</th>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Amount</th>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Method</th>
-                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Status</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Date</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Credits</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Amount</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Method</th>
+                                        <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
+                                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                                     {withdrawals.map((w, i) => (
-                                        <motion.tr
-                                            key={i}
-                                            variants={rowVariants}
-                                            initial="hidden"
-                                            animate="visible"
-                                            custom={i}
-                                            className="hover:bg-gray-50/50 transition-colors"
-                                        >
-                                            <td className="px-4 py-3 text-xs text-gray-600">{new Date(w.requestDate).toLocaleDateString()}</td>
-                                            <td className="px-4 py-3 text-gray-700">{w.withdrawalCredits} 🪙</td>
-                                            <td className="px-4 py-3 text-emerald-600 font-semibold">${w.withdrawalAmount}</td>
-                                            <td className="px-4 py-3 text-gray-600">{w.paymentSystem}</td>
-                                            <td className="px-4 py-3">
-                                                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold capitalize ${statusBadge(w.status)}`}>
-                                                    {w.status}
-                                                </span>
-                                            </td>
+                                        <motion.tr key={i} variants={rowVariants} initial="hidden" animate="visible" custom={i} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                            <td className="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">{new Date(w.requestDate).toLocaleDateString()}</td>
+                                            <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{w.withdrawalCredits} 🪙</td>
+                                            <td className="px-4 py-3 text-emerald-600 dark:text-emerald-400 font-semibold">${w.withdrawalAmount}</td>
+                                            <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{w.paymentSystem}</td>
+                                            <td className="px-4 py-3"><span className={`px-2.5 py-1 rounded-full text-xs font-semibold capitalize ${statusBadge(w.status)}`}>{w.status}</span></td>
                                         </motion.tr>
                                     ))}
                                 </tbody>

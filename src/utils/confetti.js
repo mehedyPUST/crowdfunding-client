@@ -50,3 +50,21 @@ export const fireCelebrationConfetti = () => {
     };
     frame();
 };
+
+// Gentle welcome confetti
+export const fireWelcomeConfetti = () => {
+    const defaults = {
+        spread: 360,
+        ticks: 50,
+        gravity: 0,
+        decay: 0.94,
+        startVelocity: 30,
+        colors: ['#f59e0b', '#f97316', '#10b981', '#14b8a6', '#8b5cf6'],
+        origin: { y: 0.5 }
+    };
+
+    confetti({ ...defaults, particleCount: 40, shapes: ['circle'] });
+    setTimeout(() => {
+        confetti({ ...defaults, particleCount: 40, shapes: ['circle'] });
+    }, 200);
+};
