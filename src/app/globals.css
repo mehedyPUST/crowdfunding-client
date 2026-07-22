@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  /* Amber/Orange - Primary Brand (30%) */
   --color-brand-50: #fffbeb;
   --color-brand-100: #fef3c7;
   --color-brand-200: #fde68a;
@@ -13,7 +14,6 @@
   --color-brand-800: #92400e;
   --color-brand-900: #78350f;
 
-  /* Emerald/Teal - Accent (10%) */
   --color-accent-50: #ecfdf5;
   --color-accent-100: #d1fae5;
   --color-accent-200: #a7f3d0;
@@ -24,4 +24,8 @@
   --color-accent-700: #047857;
   --color-accent-800: #065f46;
   --color-accent-900: #064e3b;
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
