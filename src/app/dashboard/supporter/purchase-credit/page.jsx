@@ -5,12 +5,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
 import { Coins, Check, Sparkles, Zap, Shield, ArrowRight, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const packages = [
-    { id: '100', credits: 100, price: 10, popular: false, bonus: 0, color: 'from-blue-500 to-blue-600' },
-    { id: '300', credits: 300, price: 25, popular: true, bonus: 20, color: 'from-brand-500 to-brand-600' },
-    { id: '800', credits: 800, price: 60, popular: false, bonus: 50, color: 'from-accent-500 to-accent-600' },
-    { id: '1500', credits: 1500, price: 110, popular: false, bonus: 100, color: 'from-purple-500 to-purple-600' },
+    { id: '100', credits: 100, price: 10, popular: false, bonus: 0, gradient: 'from-amber-400 to-orange-400' },
+    { id: '300', credits: 300, price: 25, popular: true, bonus: 20, gradient: 'from-amber-500 to-orange-500' },
+    { id: '800', credits: 800, price: 60, popular: false, bonus: 50, gradient: 'from-emerald-400 to-teal-400' },
+    { id: '1500', credits: 1500, price: 110, popular: false, bonus: 100, gradient: 'from-emerald-500 to-teal-500' },
 ];
 
 function PurchaseContent() {
@@ -21,7 +22,6 @@ function PurchaseContent() {
     const [verifying, setVerifying] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
 
-    // Handle Stripe redirect
     useEffect(() => {
         const sessionId = searchParams.get('session_id');
         const status = searchParams.get('status');
@@ -36,14 +36,11 @@ function PurchaseContent() {
                 return;
             }
 
-            console.log('Verifying payment:', { sessionId, pkgId });
-
             api.post('/payments/confirm', {
                 paymentIntentId: sessionId,
                 packageId: pkgId,
             })
                 .then((res) => {
-                    console.log('Confirm response:', res.data);
                     localStorage.removeItem('pendingPackage');
 
                     if (res.data.alreadyCredited) {
@@ -57,13 +54,11 @@ function PurchaseContent() {
                         newBalance: res.data.credits,
                     });
 
-                    // Force reload to update credits everywhere
                     setTimeout(() => {
                         window.location.href = '/dashboard/supporter/purchase-credit';
                     }, 2000);
                 })
                 .catch((err) => {
-                    console.error('Confirm error:', err.response?.data);
                     toast.error(err.response?.data?.error || 'Payment verification failed');
                     localStorage.removeItem('pendingPackage');
                     router.replace('/dashboard/supporter/purchase-credit');
@@ -77,7 +72,6 @@ function PurchaseContent() {
             router.replace('/dashboard/supporter/purchase-credit');
         }
 
-        // Clean URL params on fresh load
         if (!status && !sessionId && searchParams.toString()) {
             router.replace('/dashboard/supporter/purchase-credit');
         }
@@ -89,23 +83,31 @@ function PurchaseContent() {
 
         try {
             const res = await api.post('/payments/create-checkout', { packageId: pkg.id });
-            console.log('Checkout URL:', res.data.url);
             window.location.href = res.data.url;
         } catch (err) {
-            console.error('Payment init error:', err.response?.data);
             toast.error('Failed to initialize payment');
             setLoading(null);
             localStorage.removeItem('pendingPackage');
         }
     };
 
+    const containerVariants = {
+        hidden: {},
+        visible: { transition: { staggerChildren: 0.08 } },
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+    };
+
     if (verifying) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
-                    <Loader2 className="w-10 h-10 text-brand-600 animate-spin mx-auto mb-4" />
-                    <p className="text-slate-600 font-medium">Verifying your payment...</p>
-                    <p className="text-sm text-slate-400 mt-1">Please wait a moment</p>
+                    <Loader2 className="w-10 h-10 text-amber-500 animate-spin mx-auto mb-4" />
+                    <p className="text-gray-600 font-medium">Verifying your payment...</p>
+                    <p className="text-sm text-gray-400 mt-1">Please wait a moment</p>
                 </div>
             </div>
         );
@@ -114,97 +116,112 @@ function PurchaseContent() {
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+            >
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-800">Purchase Credits</h1>
-                    <p className="text-slate-500 text-sm mt-1">Buy credits to support campaigns you believe in</p>
+                    <h1 className="text-2xl font-bold text-gray-800">Purchase Credits</h1>
+                    <p className="text-gray-500 text-sm mt-1">Buy credits to support campaigns you believe in</p>
                 </div>
-                <div className="flex items-center gap-3 bg-gradient-to-r from-brand-50 to-brand-100/50 border border-brand-100 rounded-2xl px-5 py-3">
-                    <div className="w-10 h-10 rounded-xl bg-brand-100 flex items-center justify-center">
-                        <Coins className="w-5 h-5 text-brand-600" />
+                <div className="flex items-center gap-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl px-5 py-3 shadow-sm">
+                    <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+                        <Coins className="w-5 h-5 text-amber-600" />
                     </div>
                     <div>
-                        <p className="text-xs text-slate-500 font-medium">Your Balance</p>
-                        <p className="text-xl font-bold text-brand-700">🪙 {user?.credits || 0}</p>
+                        <p className="text-xs text-gray-500 font-medium">Your Balance</p>
+                        <p className="text-xl font-bold text-amber-700">🪙 {user?.credits || 0}</p>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             {/* Success Message */}
             {successMessage && (
-                <div className="bg-gradient-to-r from-brand-50 to-green-50 border border-brand-200 rounded-xl p-6 animate-in fade-in slide-in-from-top-2">
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-6"
+                >
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center">
-                            <Check className="w-6 h-6 text-brand-600" />
+                        <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
+                            <Check className="w-6 h-6 text-emerald-600" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-slate-800">Payment Successful!</h3>
-                            <p className="text-sm text-slate-600">
+                            <h3 className="font-bold text-gray-800">Payment Successful!</h3>
+                            <p className="text-sm text-gray-600">
                                 {successMessage.credits} credits added. New balance: 🪙 {successMessage.newBalance}
                             </p>
                         </div>
                     </div>
-                </div>
+                </motion.div>
             )}
 
             {/* Features */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[
-                    { icon: Zap, text: 'Instant Delivery', color: 'text-yellow-500' },
-                    { icon: Shield, text: 'Secure Payment', color: 'text-green-500' },
-                    { icon: Sparkles, text: 'Bonus Credits', color: 'text-purple-500' },
+                    { icon: Zap, text: 'Instant Delivery', color: 'text-amber-500', bg: 'bg-amber-50' },
+                    { icon: Shield, text: 'Secure Payment', color: 'text-emerald-500', bg: 'bg-emerald-50' },
+                    { icon: Sparkles, text: 'Bonus Credits', color: 'text-amber-500', bg: 'bg-amber-50' },
                 ].map((f, i) => (
-                    <div key={i} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3">
-                        <f.icon className={`w-5 h-5 ${f.color}`} />
-                        <span className="text-sm font-medium text-slate-700">{f.text}</span>
+                    <div key={i} className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3.5 hover:shadow-sm transition-shadow">
+                        <div className={`w-9 h-9 rounded-lg ${f.bg} flex items-center justify-center`}>
+                            <f.icon className={`w-5 h-5 ${f.color}`} />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">{f.text}</span>
                     </div>
                 ))}
             </div>
 
             {/* Packages */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+            >
                 {packages.map((pkg) => (
-                    <div
+                    <motion.div
                         key={pkg.id}
+                        variants={cardVariants}
+                        whileHover={loading ? {} : { y: -6 }}
                         onClick={() => !loading && handlePayment(pkg)}
-                        className={`relative bg-white rounded-2xl border-2 p-6 transition-all cursor-pointer hover:shadow-xl hover:-translate-y-1 ${pkg.popular
-                                ? 'border-brand-400 shadow-brand-500/10 shadow-lg'
-                                : 'border-slate-200 hover:border-brand-300'
+                        className={`relative bg-white rounded-2xl border-2 p-6 transition-all cursor-pointer ${pkg.popular
+                                ? 'border-amber-400 shadow-lg shadow-amber-100/50'
+                                : 'border-gray-200 hover:border-amber-300 hover:shadow-xl'
                             } ${loading === pkg.id ? 'opacity-70 pointer-events-none' : ''}`}
                     >
                         {pkg.popular && (
-                            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-brand-500 to-brand-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">
+                            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">
                                 MOST POPULAR
                             </div>
                         )}
                         {pkg.bonus > 0 && (
-                            <div className="absolute -top-3 right-3 bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                            <div className="absolute -top-3 right-3 bg-emerald-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow-md">
                                 +{pkg.bonus} BONUS
                             </div>
                         )}
 
-                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${pkg.color} flex items-center justify-center mb-4 shadow-lg`}>
+                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${pkg.gradient} flex items-center justify-center mb-4 shadow-lg`}>
                             <Coins className="w-6 h-6 text-white" />
                         </div>
 
-                        <p className="text-3xl font-bold text-slate-800">{pkg.credits}</p>
-                        <p className="text-sm text-slate-500 mb-1">Credits</p>
+                        <p className="text-3xl font-bold text-gray-800">{pkg.credits}</p>
+                        <p className="text-sm text-gray-500 mb-1">Credits</p>
 
                         {pkg.bonus > 0 && (
-                            <p className="text-xs text-green-600 font-medium mb-2">+{pkg.bonus} bonus credits</p>
+                            <p className="text-xs text-emerald-600 font-semibold mb-2">+{pkg.bonus} bonus credits</p>
                         )}
 
-                        <div className="mt-3 pt-3 border-t border-slate-100">
-                            <p className="text-2xl font-bold text-slate-800">${pkg.price}</p>
-                            <p className="text-xs text-slate-400">one-time payment</p>
+                        <div className="mt-3 pt-3 border-t border-gray-100">
+                            <p className="text-2xl font-bold text-gray-800">${pkg.price}</p>
+                            <p className="text-xs text-gray-400">one-time payment</p>
                         </div>
 
-                        <div
-                            className={`mt-4 w-full py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 ${pkg.popular
-                                    ? 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-md hover:shadow-lg'
-                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                                }`}
-                        >
+                        <div className={`mt-4 w-full py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 ${pkg.popular
+                                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md hover:shadow-lg'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}>
                             {loading === pkg.id ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />
                             ) : (
@@ -213,13 +230,13 @@ function PurchaseContent() {
                                 </>
                             )}
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
 
             {/* Test Card Info */}
-            <div className="bg-slate-100 border border-slate-200 rounded-xl p-4 text-center">
-                <p className="text-xs text-slate-500">
+            <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 text-center">
+                <p className="text-xs text-gray-500">
                     💳 <span className="font-medium">Test Card:</span> 4242 4242 4242 4242 | Any future date | Any 3-digit CVC
                 </p>
             </div>
@@ -231,7 +248,7 @@ export default function PurchaseCreditPage() {
     return (
         <Suspense fallback={
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-brand-600 animate-spin" />
+                <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
             </div>
         }>
             <PurchaseContent />
