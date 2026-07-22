@@ -6,6 +6,9 @@ import Image from 'next/image';
 import axios from 'axios';
 import { Clock, Target, User, Search, ChevronLeft, ChevronRight, Compass } from 'lucide-react';
 import ChatBot from '../components/ChatBot';
+import CampaignCardSkeleton from '../components/CampaignCardSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { motion } from 'framer-motion';
 
 const ITEMS_PER_PAGE = 9;
@@ -67,19 +70,30 @@ export default function ExplorePage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-20">
-                <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-10 h-10 rounded-full border-2 border-amber-200 border-t-amber-500"
-                />
+            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+                <div className="bg-white border-b border-gray-200 py-10">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <Skeleton width={280} height={36} className="mb-2" />
+                        <Skeleton width={400} height={20} />
+                        <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                            <Skeleton height={42} className="flex-1" borderRadius={12} />
+                            <Skeleton width={180} height={42} borderRadius={12} />
+                        </div>
+                    </div>
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {[...Array(9)].map((_, i) => (
+                            <CampaignCardSkeleton key={i} />
+                        ))}
+                    </div>
+                </div>
             </div>
         );
     }
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-            {/* Header */}
             <div className="bg-white border-b border-gray-200 py-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div
@@ -94,7 +108,6 @@ export default function ExplorePage() {
                         <p className="text-gray-500">Discover innovative projects and support what matters to you.</p>
                     </motion.div>
 
-                    {/* Search & Filter */}
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -123,14 +136,12 @@ export default function ExplorePage() {
                         </select>
                     </motion.div>
 
-                    {/* Results count */}
                     <p className="text-xs text-gray-400 mt-3">
                         Showing {paginatedCampaigns.length} of {filtered.length} campaigns
                     </p>
                 </div>
             </div>
 
-            {/* Campaign Cards */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {paginatedCampaigns.length === 0 ? (
                     <motion.div
@@ -163,7 +174,6 @@ export default function ExplorePage() {
                                             sizes="(max-width: 640px) 100vw, 33vw"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        {/* Progress Bar */}
                                         <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-200">
                                             <motion.div
                                                 className="h-full bg-gradient-to-r from-amber-500 to-orange-500"
@@ -179,8 +189,6 @@ export default function ExplorePage() {
                                         <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
                                             <User className="w-3 h-3" /> {camp.creatorName}
                                         </div>
-
-                                        {/* Progress Stats */}
                                         <div className="mb-3">
                                             <div className="flex items-center justify-between text-sm mb-1">
                                                 <span className="text-amber-600 font-bold">{camp.raisedAmount || 0} 🪙</span>
@@ -195,7 +203,6 @@ export default function ExplorePage() {
                                                 </span>
                                             </div>
                                         </div>
-
                                         <Link
                                             href={`/explore/${camp._id}`}
                                             className="block text-center bg-gradient-to-r from-amber-500 to-orange-500 text-white py-2.5 rounded-xl text-sm font-semibold hover:from-amber-600 hover:to-orange-600 transition-all shadow-sm shadow-amber-200"
@@ -207,7 +214,6 @@ export default function ExplorePage() {
                             ))}
                         </div>
 
-                        {/* Pagination Controls */}
                         {totalPages > 1 && (
                             <div className="flex items-center justify-center gap-2 mt-10">
                                 <button

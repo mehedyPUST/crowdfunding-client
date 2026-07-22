@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Clock } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { motion } from 'framer-motion';
+import TableRowSkeleton from '@/app/components/TableRowSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function MyContributionsPage() {
     const { api } = useAuth();
@@ -48,9 +51,19 @@ export default function MyContributionsPage() {
         }),
     };
 
+    if (loading) {
+        return (
+            <div>
+                <Skeleton width={240} height={32} className="mb-6" />
+                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <TableRowSkeleton cols={5} rows={5} />
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
-            {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -63,15 +76,7 @@ export default function MyContributionsPage() {
                 </h1>
             </motion.div>
 
-            {loading ? (
-                <div className="flex items-center justify-center py-16">
-                    <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-10 h-10 rounded-full border-2 border-amber-200 border-t-amber-500"
-                    />
-                </div>
-            ) : data.contributions.length === 0 ? (
+            {data.contributions.length === 0 ? (
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -126,7 +131,6 @@ export default function MyContributionsPage() {
                         </table>
                     </motion.div>
 
-                    {/* Pagination */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}

@@ -4,7 +4,10 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
 import { Trash2, Check, X, Clock, ShieldAlert } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import TableRowSkeleton from '@/app/components/TableRowSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function ManageCampaignsPage() {
     const { api } = useAuth();
@@ -54,12 +57,20 @@ export default function ManageCampaignsPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-16">
-                <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-10 h-10 rounded-full border-2 border-amber-200 border-t-amber-500"
-                />
+            <div className="space-y-8">
+                <Skeleton width={280} height={32} />
+                <div>
+                    <Skeleton width={180} height={24} className="mb-3" />
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <TableRowSkeleton cols={4} rows={3} />
+                    </div>
+                </div>
+                <div>
+                    <Skeleton width={140} height={24} className="mb-3" />
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <TableRowSkeleton cols={3} rows={5} />
+                    </div>
+                </div>
             </div>
         );
     }
@@ -75,7 +86,6 @@ export default function ManageCampaignsPage() {
 
     return (
         <div className="space-y-8">
-            {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}

@@ -5,6 +5,9 @@ import { useAuth } from '@/app/context/AuthContext';
 import { Check, Wallet, ArrowLeftRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import TableRowSkeleton from '@/app/components/TableRowSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function WithdrawalRequestsPage() {
     const { api } = useAuth();
@@ -31,12 +34,11 @@ export default function WithdrawalRequestsPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-16">
-                <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-10 h-10 rounded-full border-2 border-amber-200 border-t-amber-500"
-                />
+            <div>
+                <Skeleton width={280} height={32} className="mb-6" />
+                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <TableRowSkeleton cols={6} rows={4} />
+                </div>
             </div>
         );
     }
@@ -52,7 +54,6 @@ export default function WithdrawalRequestsPage() {
 
     return (
         <div>
-            {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}

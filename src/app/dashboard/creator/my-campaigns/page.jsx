@@ -5,6 +5,9 @@ import { Edit, Trash2, FileText, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/app/context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import TableRowSkeleton from '@/app/components/TableRowSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function MyCampaignsPage() {
     const { api } = useAuth();
@@ -62,12 +65,11 @@ export default function MyCampaignsPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-16">
-                <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-10 h-10 rounded-full border-2 border-amber-200 border-t-amber-500"
-                />
+            <div>
+                <Skeleton width={220} height={32} className="mb-6" />
+                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <TableRowSkeleton cols={6} rows={5} />
+                </div>
             </div>
         );
     }
@@ -85,7 +87,6 @@ export default function MyCampaignsPage() {
 
     return (
         <div>
-            {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -179,7 +180,6 @@ export default function MyCampaignsPage() {
                 </motion.div>
             )}
 
-            {/* Edit Modal */}
             <AnimatePresence>
                 {editModal && (
                     <motion.div

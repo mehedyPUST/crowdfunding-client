@@ -6,6 +6,9 @@ import { useAuth } from '@/app/context/AuthContext';
 import { Trash2, Edit3, Users, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import TableRowSkeleton from '@/app/components/TableRowSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function ManageUsersPage() {
     const { api } = useAuth();
@@ -60,12 +63,11 @@ export default function ManageUsersPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-16">
-                <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-10 h-10 rounded-full border-2 border-amber-200 border-t-amber-500"
-                />
+            <div>
+                <Skeleton width={240} height={32} className="mb-6" />
+                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <TableRowSkeleton cols={5} rows={8} />
+                </div>
             </div>
         );
     }
@@ -81,7 +83,6 @@ export default function ManageUsersPage() {
 
     return (
         <div>
-            {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -94,7 +95,6 @@ export default function ManageUsersPage() {
                 </h1>
             </motion.div>
 
-            {/* Table */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -170,7 +170,6 @@ export default function ManageUsersPage() {
                 </table>
             </motion.div>
 
-            {/* Edit Role Modal */}
             <AnimatePresence>
                 {editingUser && (
                     <motion.div

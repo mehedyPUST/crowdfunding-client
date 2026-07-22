@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import ProfileSkeleton from '@/app/components/ProfileSkeleton';
 
 export default function ProfilePage() {
     const { user, api } = useAuth();
@@ -15,8 +16,8 @@ export default function ProfilePage() {
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState({ name: '', photoURL: '' });
     const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Password change states
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
@@ -52,6 +53,7 @@ export default function ProfilePage() {
                 setStats({ totalUsers: res.data.length });
             }
         } catch { }
+        finally { setLoading(false); }
     };
 
     const handleSave = async () => {
@@ -96,9 +98,12 @@ export default function ProfilePage() {
         { icon: Calendar, label: 'Member Since', value: new Date(user?.createdAt || Date.now()).toLocaleDateString(), color: 'text-emerald-500', bg: 'bg-emerald-50' },
     ];
 
+    if (loading) {
+        return <ProfileSkeleton />;
+    }
+
     return (
         <div className="max-w-3xl mx-auto space-y-6">
-            {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -110,7 +115,6 @@ export default function ProfilePage() {
                 </h1>
             </motion.div>
 
-            {/* Profile Card */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -195,7 +199,6 @@ export default function ProfilePage() {
                 </div>
             </motion.div>
 
-            {/* Info Cards */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -217,7 +220,6 @@ export default function ProfilePage() {
                 ))}
             </motion.div>
 
-            {/* Activity Summary */}
             {stats && (
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -261,7 +263,6 @@ export default function ProfilePage() {
                 </motion.div>
             )}
 
-            {/* Password Change Modal */}
             <AnimatePresence>
                 {showPasswordModal && (
                     <motion.div

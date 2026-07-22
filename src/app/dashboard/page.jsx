@@ -5,6 +5,9 @@ import { useAuth } from '../context/AuthContext';
 import { Check, X, Eye, User, Mail, Coins, FileText, TrendingUp, CreditCard, Users, HandHeart } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import StatsSkeleton from '@/app/components/StatsSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function DashboardHome() {
     const { user, api } = useAuth();
@@ -90,7 +93,6 @@ export default function DashboardHome() {
 
     return (
         <div className="space-y-8">
-            {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -101,7 +103,7 @@ export default function DashboardHome() {
                 </h1>
             </motion.div>
 
-            {/* Basic Info Cards */}
+            {/* Info Cards */}
             <motion.div
                 variants={containerVariants}
                 initial="hidden"
@@ -132,8 +134,10 @@ export default function DashboardHome() {
                 ))}
             </motion.div>
 
-            {/* Role Stats */}
-            {stats && (
+            {/* Stats */}
+            {!stats ? (
+                <StatsSkeleton cards={3} />
+            ) : (
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
@@ -147,20 +151,13 @@ export default function DashboardHome() {
                                 { icon: TrendingUp, label: 'Active Campaigns', value: stats.active, gradient: 'from-emerald-50 to-teal-50', border: 'border-emerald-200', textColor: 'text-emerald-600', iconBg: 'bg-emerald-100' },
                                 { icon: Coins, label: 'Total Raised', value: `${stats.raised} 🪙`, gradient: 'from-amber-50 to-orange-50', border: 'border-amber-200', textColor: 'text-amber-600', iconBg: 'bg-amber-100', highlight: true },
                             ].map((stat, i) => (
-                                <motion.div
-                                    key={i}
-                                    variants={cardVariants}
-                                    whileHover={{ y: -4 }}
-                                    className={`bg-gradient-to-br ${stat.gradient} rounded-2xl border ${stat.border} p-5 relative overflow-hidden`}
-                                >
+                                <motion.div key={i} variants={cardVariants} whileHover={{ y: -4 }} className={`bg-gradient-to-br ${stat.gradient} rounded-2xl border ${stat.border} p-5 relative overflow-hidden`}>
                                     <div className={`absolute -top-4 -right-4 w-20 h-20 rounded-full ${stat.iconBg} opacity-50`} />
                                     <div className={`inline-flex items-center justify-center w-9 h-9 rounded-lg ${stat.iconBg} mb-3 relative`}>
                                         <stat.icon className={`w-5 h-5 ${stat.textColor}`} />
                                     </div>
                                     <p className={`text-sm font-medium mb-1 relative ${stat.textColor}`}>{stat.label}</p>
-                                    <p className={`text-2xl font-bold relative ${stat.highlight ? stat.textColor : 'text-gray-800'}`}>
-                                        {stat.value}
-                                    </p>
+                                    <p className={`text-2xl font-bold relative ${stat.highlight ? stat.textColor : 'text-gray-800'}`}>{stat.value}</p>
                                 </motion.div>
                             ))}
                         </>
@@ -173,20 +170,13 @@ export default function DashboardHome() {
                                 { icon: TrendingUp, label: 'Pending', value: stats.pending, gradient: 'from-amber-50 to-orange-50', border: 'border-amber-200', textColor: 'text-amber-600', iconBg: 'bg-amber-100', highlight: true },
                                 { icon: CreditCard, label: 'Total Contributed', value: `${stats.contributed} 🪙`, gradient: 'from-emerald-50 to-teal-50', border: 'border-emerald-200', textColor: 'text-emerald-600', iconBg: 'bg-emerald-100', highlight: true },
                             ].map((stat, i) => (
-                                <motion.div
-                                    key={i}
-                                    variants={cardVariants}
-                                    whileHover={{ y: -4 }}
-                                    className={`bg-gradient-to-br ${stat.gradient} rounded-2xl border ${stat.border} p-5 relative overflow-hidden`}
-                                >
+                                <motion.div key={i} variants={cardVariants} whileHover={{ y: -4 }} className={`bg-gradient-to-br ${stat.gradient} rounded-2xl border ${stat.border} p-5 relative overflow-hidden`}>
                                     <div className={`absolute -top-4 -right-4 w-20 h-20 rounded-full ${stat.iconBg} opacity-50`} />
                                     <div className={`inline-flex items-center justify-center w-9 h-9 rounded-lg ${stat.iconBg} mb-3 relative`}>
                                         <stat.icon className={`w-5 h-5 ${stat.textColor}`} />
                                     </div>
                                     <p className={`text-sm font-medium mb-1 relative ${stat.textColor}`}>{stat.label}</p>
-                                    <p className={`text-2xl font-bold relative ${stat.highlight ? stat.textColor : 'text-gray-800'}`}>
-                                        {stat.value}
-                                    </p>
+                                    <p className={`text-2xl font-bold relative ${stat.highlight ? stat.textColor : 'text-gray-800'}`}>{stat.value}</p>
                                 </motion.div>
                             ))}
                         </>
@@ -199,20 +189,13 @@ export default function DashboardHome() {
                                 { icon: Users, label: 'Total Creators', value: stats.creators, gradient: 'from-emerald-50 to-teal-50', border: 'border-emerald-200', textColor: 'text-emerald-600', iconBg: 'bg-emerald-100' },
                                 { icon: Coins, label: 'Credits in System', value: stats.totalCredits, gradient: 'from-amber-50 to-orange-50', border: 'border-amber-200', textColor: 'text-amber-600', iconBg: 'bg-amber-100', highlight: true },
                             ].map((stat, i) => (
-                                <motion.div
-                                    key={i}
-                                    variants={cardVariants}
-                                    whileHover={{ y: -4 }}
-                                    className={`bg-gradient-to-br ${stat.gradient} rounded-2xl border ${stat.border} p-5 relative overflow-hidden`}
-                                >
+                                <motion.div key={i} variants={cardVariants} whileHover={{ y: -4 }} className={`bg-gradient-to-br ${stat.gradient} rounded-2xl border ${stat.border} p-5 relative overflow-hidden`}>
                                     <div className={`absolute -top-4 -right-4 w-20 h-20 rounded-full ${stat.iconBg} opacity-50`} />
                                     <div className={`inline-flex items-center justify-center w-9 h-9 rounded-lg ${stat.iconBg} mb-3 relative`}>
                                         <stat.icon className={`w-5 h-5 ${stat.textColor}`} />
                                     </div>
                                     <p className={`text-sm font-medium mb-1 relative ${stat.textColor}`}>{stat.label}</p>
-                                    <p className={`text-2xl font-bold relative ${stat.highlight ? stat.textColor : 'text-gray-800'}`}>
-                                        {stat.value}
-                                    </p>
+                                    <p className={`text-2xl font-bold relative ${stat.highlight ? stat.textColor : 'text-gray-800'}`}>{stat.value}</p>
                                 </motion.div>
                             ))}
                         </>
@@ -220,7 +203,7 @@ export default function DashboardHome() {
                 </motion.div>
             )}
 
-            {/* Creator: Contributions to Review */}
+            {/* Creator: Pending Contributions */}
             {user?.role === 'creator' && contributions.length > 0 && (
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

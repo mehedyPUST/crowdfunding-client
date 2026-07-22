@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
 import { History, CreditCard, Wallet } from 'lucide-react';
 import { motion } from 'framer-motion';
+import TableRowSkeleton from '@/app/components/TableRowSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function PaymentHistoryPage() {
     const { api, user } = useAuth();
@@ -47,12 +50,11 @@ export default function PaymentHistoryPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-16">
-                <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-10 h-10 rounded-full border-2 border-amber-200 border-t-amber-500"
-                />
+            <div>
+                <Skeleton width={240} height={32} className="mb-6" />
+                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <TableRowSkeleton cols={5} rows={4} />
+                </div>
             </div>
         );
     }

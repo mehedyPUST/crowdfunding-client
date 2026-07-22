@@ -21,6 +21,7 @@
     "react-hook-form": "^7.82.0",
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.7.0",
+    "react-loading-skeleton": "^3.5.0",
     "react-responsive-carousel": "^3.2.23",
     "swiper": "^14.0.6",
     "zod": "^4.4.3"
