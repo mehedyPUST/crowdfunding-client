@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { fireConfetti } from '@/utils/confetti';
+import DarkModeToggle from '../components/DarkModeToggle';
 
 const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
 
@@ -69,7 +70,12 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Right Panel */}
-                <div className="p-8 sm:p-10 md:p-12 overflow-y-auto max-h-[90vh]">
+                <div className="p-8 sm:p-10 md:p-12 overflow-y-auto max-h-[90vh] relative">
+                    {/* 🌙 Dark Mode Toggle */}
+                    <div className="absolute top-4 right-4 z-10">
+                        <DarkModeToggle />
+                    </div>
+
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="mb-8">
                         <div className="md:hidden flex justify-center mb-6"><div className="bg-gradient-to-br from-emerald-500 to-teal-500 p-4 rounded-2xl"><svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor" fillOpacity="0.3"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg></div></div>
                         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">Create Account</h1>

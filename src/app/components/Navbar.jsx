@@ -60,6 +60,8 @@ export default function Navbar() {
 
                         {!user ? (
                             <div className="flex items-center gap-2">
+                                {/* 🌙 Theme Toggle - visible for non-logged-in users */}
+                                <DarkModeToggle />
                                 <Link
                                     href="/login"
                                     className="text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-xl transition-all duration-200 text-sm font-medium"
@@ -83,6 +85,7 @@ export default function Navbar() {
 
                                 <div className="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1" />
 
+                                {/* 🌙 Theme Toggle - for logged-in users */}
                                 <DarkModeToggle />
                                 <NotificationBell />
 
@@ -121,13 +124,17 @@ export default function Navbar() {
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <button
-                        className="md:hidden relative p-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-all duration-200 active:scale-95"
-                        onClick={() => setMenuOpen(!menuOpen)}
-                        aria-label="Toggle menu"
-                    >
-                        {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                    </button>
+                    <div className="flex items-center gap-2 md:hidden">
+                        {/* 🌙 Mobile Theme Toggle - always visible */}
+                        <DarkModeToggle />
+                        <button
+                            className="relative p-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-all duration-200 active:scale-95"
+                            onClick={() => setMenuOpen(!menuOpen)}
+                            aria-label="Toggle menu"
+                        >
+                            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -179,10 +186,7 @@ export default function Navbar() {
                                         <span className="text-amber-700 dark:text-amber-400 font-semibold text-sm flex items-center gap-2">
                                             🪙 {user?.credits || 0} Credits
                                         </span>
-                                        <div className="flex items-center gap-1">
-                                            <DarkModeToggle />
-                                            <NotificationBell />
-                                        </div>
+                                        <NotificationBell />
                                     </div>
                                     <Link
                                         href="/dashboard"
