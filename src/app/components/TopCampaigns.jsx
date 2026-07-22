@@ -66,7 +66,6 @@ export default function TopCampaigns() {
                             whileHover={{ y: -8 }}
                             className="group relative bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:shadow-amber-100/30 dark:hover:shadow-amber-900/20 transition-all duration-300"
                         >
-                            {/* Image */}
                             <div className="relative h-52 overflow-hidden">
                                 <Image
                                     src={campaign.image}
@@ -76,23 +75,16 @@ export default function TopCampaigns() {
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                     priority={index < 2}
                                 />
-                                {/* Gradient overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-
-                                {/* Top badge */}
                                 <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-amber-500/30 z-10">
                                     <TrendingUp className="w-3 h-3" /> Top
                                 </div>
-
-                                {/* Title on image */}
                                 <div className="absolute bottom-4 left-4 right-4 z-10">
                                     <h3 className="font-bold text-white text-lg leading-tight drop-shadow-lg">
                                         {campaign.title}
                                     </h3>
                                 </div>
                             </div>
-
-                            {/* Content */}
                             <div className="p-5">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
