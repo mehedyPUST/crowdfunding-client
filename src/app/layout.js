@@ -20,12 +20,35 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-slate-50 text-slate-800 antialiased`}>
+      <body className={`${inter.className} bg-gray-50 text-gray-800 antialiased`}>
         <AuthProvider>
           {!isDashboard && <Navbar />}
           <main>{children}</main>
           {!isDashboard && <Footer />}
-          <Toaster position="top-right" />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                borderRadius: '12px',
+                background: '#fff',
+                color: '#1f2937',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                border: '1px solid #e5e7eb',
+              },
+              success: {
+                iconTheme: {
+                  primary: '#059669',
+                  secondary: '#fff',
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: '#f43f5e',
+                  secondary: '#fff',
+                },
+              },
+            }}
+          />
         </AuthProvider>
       </body>
     </html>
