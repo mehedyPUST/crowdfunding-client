@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useAuth } from '@/app/context/AuthContext';
+import ProfileSkeleton from '@/app/components/ProfileSkeleton';
 
 export default function ProfilePage() {
     const { user, api } = useAuth();
