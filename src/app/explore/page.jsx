@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import axios from 'axios';
-import { Clock, Target, User, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clock, Target, User, Search, ChevronLeft, ChevronRight, Compass } from 'lucide-react';
 import ChatBot from '../components/ChatBot';
+import { motion } from 'framer-motion';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -44,7 +45,6 @@ export default function ExplorePage() {
 
     const categories = [...new Set(campaigns.map((c) => c.category))];
 
-    // Pagination logic
     const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const paginatedCampaigns = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -56,48 +56,75 @@ export default function ExplorePage() {
         }
     };
 
+    const cardVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: (i) => ({
+            opacity: 1,
+            y: 0,
+            transition: { delay: i * 0.05, duration: 0.4, ease: "easeOut" }
+        }),
+    };
+
     if (loading) {
         return (
-            <div className="flex justify-center py-20">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
+            <div className="flex items-center justify-center py-20">
+                <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-10 h-10 rounded-full border-2 border-amber-200 border-t-amber-500"
+                />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
             {/* Header */}
-            <div className="bg-white border-b border-slate-200 py-8">
+            <div className="bg-white border-b border-gray-200 py-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-3xl font-bold text-slate-800 mb-2">Explore Campaigns</h1>
-                    <p className="text-slate-500">Discover innovative projects and support what matters to you.</p>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-2">
+                            <Compass className="w-7 h-7 text-amber-500" />
+                            Explore Campaigns
+                        </h1>
+                        <p className="text-gray-500">Discover innovative projects and support what matters to you.</p>
+                    </motion.div>
 
                     {/* Search & Filter */}
-                    <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.1 }}
+                        className="flex flex-col sm:flex-row gap-3 mt-6"
+                    >
                         <div className="relative flex-1">
-                            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+                            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
                             <input
                                 type="text"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 placeholder="Search campaigns..."
-                                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-500"
+                                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 bg-white transition-all"
                             />
                         </div>
                         <select
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
-                            className="px-4 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-500"
+                            className="px-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 bg-white transition-all"
                         >
                             <option value="">All Categories</option>
                             {categories.map((cat) => (
                                 <option key={cat} value={cat}>{cat}</option>
                             ))}
                         </select>
-                    </div>
+                    </motion.div>
 
                     {/* Results count */}
-                    <p className="text-xs text-slate-400 mt-3">
+                    <p className="text-xs text-gray-400 mt-3">
                         Showing {paginatedCampaigns.length} of {filtered.length} campaigns
                     </p>
                 </div>
@@ -106,45 +133,60 @@ export default function ExplorePage() {
             {/* Campaign Cards */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {paginatedCampaigns.length === 0 ? (
-                    <div className="text-center py-12">
-                        <p className="text-slate-500 text-lg mb-2">No campaigns found</p>
-                        <p className="text-slate-400 text-sm">Try adjusting your search or filter</p>
-                    </div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center py-16"
+                    >
+                        <p className="text-gray-500 text-lg mb-2">No campaigns found</p>
+                        <p className="text-gray-400 text-sm">Try adjusting your search or filter</p>
+                    </motion.div>
                 ) : (
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {paginatedCampaigns.map((camp) => (
-                                <div key={camp._id} className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition group">
+                            {paginatedCampaigns.map((camp, i) => (
+                                <motion.div
+                                    key={camp._id}
+                                    variants={cardVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    custom={i % ITEMS_PER_PAGE}
+                                    whileHover={{ y: -4 }}
+                                    className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:shadow-amber-100/30 hover:border-amber-200 transition-all duration-300 group"
+                                >
                                     <div className="relative h-44 overflow-hidden">
                                         <Image
                                             src={camp.image || 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&h=300&fit=crop'}
                                             alt={camp.title}
                                             fill
-                                            className="object-cover group-hover:scale-105 transition duration-300"
+                                            className="object-cover group-hover:scale-110 transition duration-500"
                                             sizes="(max-width: 640px) 100vw, 33vw"
                                         />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                         {/* Progress Bar */}
-                                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-200">
-                                            <div
-                                                className="h-full bg-gradient-to-r from-brand-500 to-brand-600 transition-all duration-300"
-                                                style={{ width: `${Math.min((camp.raisedAmount / camp.fundingGoal) * 100, 100)}%` }}
+                                        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-200">
+                                            <motion.div
+                                                className="h-full bg-gradient-to-r from-amber-500 to-orange-500"
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${Math.min((camp.raisedAmount / camp.fundingGoal) * 100, 100)}%` }}
+                                                transition={{ duration: 1, ease: "easeOut" }}
                                             />
                                         </div>
                                     </div>
                                     <div className="p-4">
-                                        <span className="text-xs text-accent-600 bg-accent-50 px-2 py-0.5 rounded-full">{camp.category}</span>
-                                        <h3 className="font-semibold text-slate-800 mt-2 mb-2 line-clamp-1">{camp.title}</h3>
-                                        <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
+                                        <span className="text-xs text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full font-medium">{camp.category}</span>
+                                        <h3 className="font-semibold text-gray-800 mt-2 mb-2 line-clamp-1 group-hover:text-amber-700 transition-colors">{camp.title}</h3>
+                                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
                                             <User className="w-3 h-3" /> {camp.creatorName}
                                         </div>
 
                                         {/* Progress Stats */}
                                         <div className="mb-3">
                                             <div className="flex items-center justify-between text-sm mb-1">
-                                                <span className="text-brand-600 font-bold">{camp.raisedAmount || 0} Credits</span>
-                                                <span className="text-slate-400 text-xs">{Math.round((camp.raisedAmount / camp.fundingGoal) * 100)}%</span>
+                                                <span className="text-amber-600 font-bold">{camp.raisedAmount || 0} 🪙</span>
+                                                <span className="text-gray-400 text-xs">{Math.round((camp.raisedAmount / camp.fundingGoal) * 100)}%</span>
                                             </div>
-                                            <div className="flex items-center justify-between text-xs text-slate-400">
+                                            <div className="flex items-center justify-between text-xs text-gray-400">
                                                 <span className="flex items-center gap-1">
                                                     <Target className="w-3 h-3" /> Goal: {camp.fundingGoal}
                                                 </span>
@@ -156,12 +198,12 @@ export default function ExplorePage() {
 
                                         <Link
                                             href={`/explore/${camp._id}`}
-                                            className="block text-center bg-brand-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-brand-700 transition"
+                                            className="block text-center bg-gradient-to-r from-amber-500 to-orange-500 text-white py-2.5 rounded-xl text-sm font-semibold hover:from-amber-600 hover:to-orange-600 transition-all shadow-sm shadow-amber-200"
                                         >
                                             View Details
                                         </Link>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
 
@@ -171,28 +213,30 @@ export default function ExplorePage() {
                                 <button
                                     onClick={() => goToPage(currentPage - 1)}
                                     disabled={currentPage === 1}
-                                    className="flex items-center gap-1 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                    className="flex items-center gap-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                 >
                                     <ChevronLeft className="w-4 h-4" /> Previous
                                 </button>
 
                                 {[...Array(totalPages)].map((_, i) => (
-                                    <button
+                                    <motion.button
                                         key={i + 1}
                                         onClick={() => goToPage(i + 1)}
-                                        className={`w-10 h-10 rounded-lg text-sm font-medium transition ${currentPage === i + 1
-                                                ? 'bg-brand-600 text-white shadow-sm'
-                                                : 'border border-slate-300 text-slate-600 hover:bg-slate-100'
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${currentPage === i + 1
+                                                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-200'
+                                                : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
                                             }`}
                                     >
                                         {i + 1}
-                                    </button>
+                                    </motion.button>
                                 ))}
 
                                 <button
                                     onClick={() => goToPage(currentPage + 1)}
                                     disabled={currentPage === totalPages}
-                                    className="flex items-center gap-1 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                    className="flex items-center gap-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                 >
                                     Next <ChevronRight className="w-4 h-4" />
                                 </button>
