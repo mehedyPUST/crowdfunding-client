@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, FileText, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/app/context/AuthContext';
-
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MyCampaignsPage() {
     const { api } = useAuth();
@@ -54,93 +54,209 @@ export default function MyCampaignsPage() {
         }
     };
 
+    const statusBadgeColors = {
+        approved: 'bg-emerald-100 text-emerald-700',
+        pending: 'bg-amber-100 text-amber-700',
+        rejected: 'bg-rose-100 text-rose-700',
+    };
+
     if (loading) {
         return (
-            <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
+            <div className="flex items-center justify-center py-16">
+                <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-10 h-10 rounded-full border-2 border-amber-200 border-t-amber-500"
+                />
             </div>
         );
     }
 
+    const rowVariants = {
+        hidden: { opacity: 0, x: -20 },
+        visible: (i) => ({
+            opacity: 1,
+            x: 0,
+            transition: { delay: i * 0.05, duration: 0.3 }
+        }),
+    };
+
+    const inputClasses = "w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 transition-all";
+
     return (
         <div>
-            <h1 className="text-2xl font-bold text-slate-800 mb-6">My Campaigns</h1>
+            {/* Header */}
+            <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="mb-6"
+            >
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <FileText className="w-6 h-6 text-amber-500" />
+                    My Campaigns
+                </h1>
+            </motion.div>
 
             {campaigns.length === 0 ? (
-                <div className="text-center py-12 text-slate-500">
-                    <p>No campaigns yet. Create your first campaign!</p>
-                </div>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                    className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm"
+                >
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-amber-50 mb-6">
+                        <FileText className="w-10 h-10 text-amber-300" />
+                    </div>
+                    <h2 className="text-lg font-semibold text-gray-700 mb-2">No Campaigns Yet</h2>
+                    <p className="text-gray-500">Create your first campaign and start raising funds!</p>
+                </motion.div>
             ) : (
-                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                    className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm"
+                >
                     <table className="w-full text-sm">
-                        <thead className="bg-slate-50 border-b border-slate-200">
+                        <thead className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-gray-200">
                             <tr>
-                                <th className="text-left px-4 py-3 font-medium text-slate-600">Title</th>
-                                <th className="text-left px-4 py-3 font-medium text-slate-600 hidden sm:table-cell">Category</th>
-                                <th className="text-left px-4 py-3 font-medium text-slate-600">Goal</th>
-                                <th className="text-left px-4 py-3 font-medium text-slate-600 hidden md:table-cell">Raised</th>
-                                <th className="text-left px-4 py-3 font-medium text-slate-600">Status</th>
-                                <th className="text-left px-4 py-3 font-medium text-slate-600">Actions</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Title</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 hidden sm:table-cell">Category</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Goal</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 hidden md:table-cell">Raised</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Status</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
-                            {campaigns.map((camp) => (
-                                <tr key={camp._id} className="hover:bg-slate-50">
-                                    <td className="px-4 py-3 font-medium text-slate-800 truncate max-w-[150px]">{camp.title}</td>
-                                    <td className="px-4 py-3 text-slate-500 hidden sm:table-cell">{camp.category}</td>
-                                    <td className="px-4 py-3">{camp.fundingGoal}</td>
-                                    <td className="px-4 py-3 hidden md:table-cell">{camp.raisedAmount || 0}</td>
+                        <tbody className="divide-y divide-gray-100">
+                            {campaigns.map((camp, i) => (
+                                <motion.tr
+                                    key={camp._id}
+                                    variants={rowVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    custom={i}
+                                    className="hover:bg-gray-50/50 transition-colors"
+                                >
+                                    <td className="px-4 py-3 font-medium text-gray-800 truncate max-w-[150px]">{camp.title}</td>
+                                    <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{camp.category}</td>
+                                    <td className="px-4 py-3 text-gray-700">{camp.fundingGoal} 🪙</td>
+                                    <td className="px-4 py-3 hidden md:table-cell">
+                                        <span className="text-emerald-600 font-medium">{camp.raisedAmount || 0} 🪙</span>
+                                    </td>
                                     <td className="px-4 py-3">
-                                        <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${camp.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                            camp.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                                'bg-red-100 text-red-700'
-                                            }`}>
+                                        <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold capitalize ${statusBadgeColors[camp.status] || 'bg-gray-100 text-gray-700'}`}>
                                             {camp.status}
                                         </span>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <div className="flex gap-2">
-                                            <button onClick={() => setEditModal(camp)} className="text-accent-600 hover:text-accent-700">
+                                        <div className="flex gap-1">
+                                            <motion.button
+                                                onClick={() => setEditModal(camp)}
+                                                whileHover={{ scale: 1.15 }}
+                                                whileTap={{ scale: 0.9 }}
+                                                className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                                                title="Edit"
+                                            >
                                                 <Edit className="w-4 h-4" />
-                                            </button>
-                                            <button onClick={() => handleDelete(camp._id)} className="text-red-500 hover:text-red-600">
+                                            </motion.button>
+                                            <motion.button
+                                                onClick={() => handleDelete(camp._id)}
+                                                whileHover={{ scale: 1.15 }}
+                                                whileTap={{ scale: 0.9 }}
+                                                className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                                                title="Delete"
+                                            >
                                                 <Trash2 className="w-4 h-4" />
-                                            </button>
+                                            </motion.button>
                                         </div>
                                     </td>
-                                </tr>
+                                </motion.tr>
                             ))}
                         </tbody>
                     </table>
-                </div>
+                </motion.div>
             )}
 
             {/* Edit Modal */}
-            {editModal && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl max-w-md w-full p-6">
-                        <h2 className="text-lg font-bold text-slate-800 mb-4">Edit Campaign</h2>
-                        <form onSubmit={handleUpdate} className="space-y-3">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
-                                <input type="text" value={editModal.title} onChange={(e) => setEditModal({ ...editModal, title: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-500" />
+            <AnimatePresence>
+                {editModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        onClick={() => setEditModal(null)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-200"
+                        >
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-bold text-gray-800">Edit Campaign</h2>
+                                <button
+                                    onClick={() => setEditModal(null)}
+                                    className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Story</label>
-                                <textarea rows={3} value={editModal.story} onChange={(e) => setEditModal({ ...editModal, story: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-500 resize-none" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Reward Info</label>
-                                <input type="text" value={editModal.rewardInfo} onChange={(e) => setEditModal({ ...editModal, rewardInfo: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-500" />
-                            </div>
-                            <div className="flex gap-3 pt-2">
-                                <button type="button" onClick={() => setEditModal(null)} className="flex-1 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">Cancel</button>
-                                <button type="submit" className="flex-1 py-2 bg-brand-600 text-white rounded-lg text-sm font-semibold hover:bg-brand-700">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+
+                            <form onSubmit={handleUpdate} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Title</label>
+                                    <input
+                                        type="text"
+                                        value={editModal.title}
+                                        onChange={(e) => setEditModal({ ...editModal, title: e.target.value })}
+                                        className={inputClasses}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Story</label>
+                                    <textarea
+                                        rows={4}
+                                        value={editModal.story}
+                                        onChange={(e) => setEditModal({ ...editModal, story: e.target.value })}
+                                        className={`${inputClasses} resize-none`}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Reward Info</label>
+                                    <input
+                                        type="text"
+                                        value={editModal.rewardInfo}
+                                        onChange={(e) => setEditModal({ ...editModal, rewardInfo: e.target.value })}
+                                        className={inputClasses}
+                                    />
+                                </div>
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditModal(null)}
+                                        className="flex-1 py-2.5 border border-gray-300 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <motion.button
+                                        type="submit"
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="flex-1 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-sm font-semibold shadow-md shadow-amber-200 hover:shadow-lg hover:shadow-amber-200/60 transition-all"
+                                    >
+                                        Save Changes
+                                    </motion.button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

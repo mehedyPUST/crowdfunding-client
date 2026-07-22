@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-
-import { Upload, X } from 'lucide-react';
+import { Upload, X, PlusCircle, Info } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/app/context/AuthContext';
+import { motion } from 'framer-motion';
 
 const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
 
@@ -64,69 +64,201 @@ export default function AddCampaignPage() {
         }
     };
 
+    const inputClasses = "w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-300 focus:border-amber-400 outline-none text-sm transition-all bg-white";
+
     return (
         <div className="max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold text-slate-800 mb-6">Add New Campaign</h1>
+            {/* Header */}
+            <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="mb-6"
+            >
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <PlusCircle className="w-6 h-6 text-amber-500" />
+                    Add New Campaign
+                </h1>
+                <p className="text-gray-500 text-sm mt-1">Share your idea with the world and start raising funds.</p>
+            </motion.div>
 
-            <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
+            {/* Form */}
+            <motion.form
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                onSubmit={handleSubmit}
+                className="bg-white rounded-2xl border border-gray-200 p-6 space-y-5 shadow-sm"
+            >
+                {/* Title */}
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Campaign Title *</label>
-                    <input type="text" required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm" placeholder="Help us build a solar-powered water pump" />
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                        Campaign Title <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        required
+                        value={form.title}
+                        onChange={(e) => setForm({ ...form, title: e.target.value })}
+                        className={inputClasses}
+                        placeholder="Help us build a solar-powered water pump"
+                    />
                 </div>
 
+                {/* Story */}
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Campaign Story *</label>
-                    <textarea required rows={5} value={form.story} onChange={(e) => setForm({ ...form, story: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm resize-none" placeholder="Describe your campaign in detail..." />
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                        Campaign Story <span className="text-rose-500">*</span>
+                    </label>
+                    <textarea
+                        required
+                        rows={5}
+                        value={form.story}
+                        onChange={(e) => setForm({ ...form, story: e.target.value })}
+                        className={`${inputClasses} resize-none`}
+                        placeholder="Describe your campaign in detail..."
+                    />
                 </div>
 
+                {/* Category & Goal */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Category *</label>
-                        <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                            Category <span className="text-rose-500">*</span>
+                        </label>
+                        <select
+                            value={form.category}
+                            onChange={(e) => setForm({ ...form, category: e.target.value })}
+                            className={inputClasses}
+                        >
                             {categories.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Funding Goal (credits) *</label>
-                        <input type="number" required min="1" value={form.fundingGoal} onChange={(e) => setForm({ ...form, fundingGoal: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm" placeholder="5000" />
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                            Funding Goal (credits) <span className="text-rose-500">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            required
+                            min="1"
+                            value={form.fundingGoal}
+                            onChange={(e) => setForm({ ...form, fundingGoal: e.target.value })}
+                            className={inputClasses}
+                            placeholder="5000"
+                        />
                     </div>
                 </div>
 
+                {/* Min Contribution & Deadline */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Min Contribution</label>
-                        <input type="number" min="1" value={form.minContribution} onChange={(e) => setForm({ ...form, minContribution: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Min Contribution</label>
+                        <input
+                            type="number"
+                            min="1"
+                            value={form.minContribution}
+                            onChange={(e) => setForm({ ...form, minContribution: e.target.value })}
+                            className={inputClasses}
+                        />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Deadline *</label>
-                        <input type="date" required value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                            Deadline <span className="text-rose-500">*</span>
+                        </label>
+                        <input
+                            type="date"
+                            required
+                            value={form.deadline}
+                            onChange={(e) => setForm({ ...form, deadline: e.target.value })}
+                            className={inputClasses}
+                        />
                     </div>
                 </div>
 
+                {/* Reward */}
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Reward Info</label>
-                    <input type="text" value={form.rewardInfo} onChange={(e) => setForm({ ...form, rewardInfo: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm" placeholder="What backers receive" />
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Reward Info</label>
+                    <input
+                        type="text"
+                        value={form.rewardInfo}
+                        onChange={(e) => setForm({ ...form, rewardInfo: e.target.value })}
+                        className={inputClasses}
+                        placeholder="What backers receive"
+                    />
                 </div>
 
+                {/* Image Upload */}
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Campaign Image</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Campaign Image</label>
                     {form.image ? (
-                        <div className="relative w-40 h-24 mb-2">
-                            <Image src={form.image} alt="Campaign" fill className="object-cover rounded-lg" sizes="160px" />
-                            <button type="button" onClick={() => setForm({ ...form, image: '' })} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5"><X className="w-4 h-4" /></button>
-                        </div>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="relative w-full h-48 mb-2 rounded-xl overflow-hidden"
+                        >
+                            <Image
+                                src={form.image}
+                                alt="Campaign"
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 672px) 100vw, 672px"
+                            />
+                            <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors" />
+                            <motion.button
+                                type="button"
+                                onClick={() => setForm({ ...form, image: '' })}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                className="absolute top-3 right-3 bg-rose-500 text-white rounded-full p-1.5 shadow-lg hover:bg-rose-600 transition-colors"
+                            >
+                                <X className="w-4 h-4" />
+                            </motion.button>
+                        </motion.div>
                     ) : (
-                        <label className="flex items-center justify-center gap-2 border-2 border-dashed border-slate-300 rounded-lg px-4 py-6 cursor-pointer hover:border-brand-400 transition text-sm text-slate-500">
-                            <Upload className="w-5 h-5" /> {uploading ? 'Uploading...' : 'Click to upload'}
+                        <label className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-gray-300 rounded-xl px-4 py-10 cursor-pointer hover:border-amber-400 hover:bg-amber-50/30 transition-all text-sm text-gray-500">
+                            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                                <Upload className="w-6 h-6 text-gray-400" />
+                            </div>
+                            <div className="text-center">
+                                <p className="font-medium text-gray-600">{uploading ? 'Uploading...' : 'Click to upload image'}</p>
+                                <p className="text-xs text-gray-400 mt-0.5">PNG, JPG up to 2MB</p>
+                            </div>
                             <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
                         </label>
                     )}
                 </div>
 
-                <button type="submit" disabled={loading} className="w-full bg-brand-600 text-white py-2.5 rounded-lg font-semibold hover:bg-brand-700 transition disabled:opacity-50 text-sm">
-                    {loading ? 'Submitting...' : 'Add Campaign'}
-                </button>
-            </form>
+                {/* Info tip */}
+                <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+                    <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <p className="text-xs text-amber-700">
+                        Your campaign will be reviewed by our team before going live. This usually takes 24-48 hours.
+                    </p>
+                </div>
+
+                {/* Submit */}
+                <motion.button
+                    type="submit"
+                    disabled={loading}
+                    whileHover={{ scale: loading ? 1 : 1.01 }}
+                    whileTap={{ scale: loading ? 1 : 0.99 }}
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-xl font-semibold hover:from-amber-600 hover:to-orange-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm shadow-md shadow-amber-200/50"
+                >
+                    {loading ? (
+                        <span className="flex items-center justify-center gap-2">
+                            <motion.span
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full inline-block"
+                            />
+                            Submitting...
+                        </span>
+                    ) : (
+                        'Submit Campaign for Review'
+                    )}
+                </motion.button>
+            </motion.form>
         </div>
     );
 }
