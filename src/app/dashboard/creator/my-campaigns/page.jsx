@@ -58,16 +58,16 @@ export default function MyCampaignsPage() {
     };
 
     const statusBadgeColors = {
-        approved: 'bg-emerald-100 text-emerald-700',
-        pending: 'bg-amber-100 text-amber-700',
-        rejected: 'bg-rose-100 text-rose-700',
+        approved: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400',
+        pending: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
+        rejected: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400',
     };
 
     if (loading) {
         return (
             <div>
-                <Skeleton width={220} height={32} className="mb-6" />
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <Skeleton width={220} height={32} className="mb-6" baseColor="#e5e7eb" highlightColor="#f3f4f6" />
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <TableRowSkeleton cols={6} rows={5} />
                 </div>
             </div>
@@ -83,7 +83,7 @@ export default function MyCampaignsPage() {
         }),
     };
 
-    const inputClasses = "w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 transition-all";
+    const inputClasses = "w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-300 dark:focus:ring-amber-600 focus:border-amber-400 dark:focus:border-amber-500 transition-all bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200";
 
     return (
         <div>
@@ -93,7 +93,7 @@ export default function MyCampaignsPage() {
                 transition={{ duration: 0.4 }}
                 className="mb-6"
             >
-                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                     <FileText className="w-6 h-6 text-amber-500" />
                     My Campaigns
                 </h1>
@@ -104,33 +104,34 @@ export default function MyCampaignsPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
-                    className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm"
+                    className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-12 text-center shadow-sm"
                 >
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-amber-50 mb-6">
-                        <FileText className="w-10 h-10 text-amber-300" />
+                    <div className="relative inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 mb-6">
+                        <FileText className="w-12 h-12 text-amber-300 dark:text-amber-500" />
+                        <div className="absolute inset-0 bg-amber-300/10 dark:bg-amber-500/5 rounded-3xl blur-xl" />
                     </div>
-                    <h2 className="text-lg font-semibold text-gray-700 mb-2">No Campaigns Yet</h2>
-                    <p className="text-gray-500">Create your first campaign and start raising funds!</p>
+                    <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">No Campaigns Yet</h2>
+                    <p className="text-gray-500 dark:text-gray-400">Create your first campaign and start raising funds!</p>
                 </motion.div>
             ) : (
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
-                    className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm"
+                    className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm"
                 >
                     <table className="w-full text-sm">
-                        <thead className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-gray-200">
+                        <thead className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-b border-gray-200 dark:border-gray-700">
                             <tr>
-                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Title</th>
-                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 hidden sm:table-cell">Category</th>
-                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Goal</th>
-                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 hidden md:table-cell">Raised</th>
-                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Status</th>
-                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600">Actions</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Title</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400 hidden sm:table-cell">Category</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Goal</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400 hidden md:table-cell">Raised</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Status</th>
+                                <th className="text-left px-4 py-3.5 font-semibold text-gray-600 dark:text-gray-400">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                             {campaigns.map((camp, i) => (
                                 <motion.tr
                                     key={camp._id}
@@ -138,16 +139,16 @@ export default function MyCampaignsPage() {
                                     initial="hidden"
                                     animate="visible"
                                     custom={i}
-                                    className="hover:bg-gray-50/50 transition-colors"
+                                    className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
                                 >
-                                    <td className="px-4 py-3 font-medium text-gray-800 truncate max-w-[150px]">{camp.title}</td>
-                                    <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{camp.category}</td>
-                                    <td className="px-4 py-3 text-gray-700">{camp.fundingGoal} 🪙</td>
+                                    <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200 truncate max-w-[150px]">{camp.title}</td>
+                                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden sm:table-cell">{camp.category}</td>
+                                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{camp.fundingGoal} 🪙</td>
                                     <td className="px-4 py-3 hidden md:table-cell">
-                                        <span className="text-emerald-600 font-medium">{camp.raisedAmount || 0} 🪙</span>
+                                        <span className="text-emerald-600 dark:text-emerald-400 font-medium">{camp.raisedAmount || 0} 🪙</span>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold capitalize ${statusBadgeColors[camp.status] || 'bg-gray-100 text-gray-700'}`}>
+                                        <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold capitalize ${statusBadgeColors[camp.status] || 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>
                                             {camp.status}
                                         </span>
                                     </td>
@@ -157,7 +158,7 @@ export default function MyCampaignsPage() {
                                                 onClick={() => setEditModal(camp)}
                                                 whileHover={{ scale: 1.15 }}
                                                 whileTap={{ scale: 0.9 }}
-                                                className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                                                className="p-2 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors"
                                                 title="Edit"
                                             >
                                                 <Edit className="w-4 h-4" />
@@ -166,7 +167,7 @@ export default function MyCampaignsPage() {
                                                 onClick={() => handleDelete(camp._id)}
                                                 whileHover={{ scale: 1.15 }}
                                                 whileTap={{ scale: 0.9 }}
-                                                className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                                                className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors"
                                                 title="Delete"
                                             >
                                                 <Trash2 className="w-4 h-4" />
@@ -186,7 +187,7 @@ export default function MyCampaignsPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
                         onClick={() => setEditModal(null)}
                     >
                         <motion.div
@@ -195,13 +196,13 @@ export default function MyCampaignsPage() {
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
                             transition={{ duration: 0.25, ease: "easeOut" }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-200"
+                            className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-200 dark:border-gray-700"
                         >
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-lg font-bold text-gray-800">Edit Campaign</h2>
+                                <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">Edit Campaign</h2>
                                 <button
                                     onClick={() => setEditModal(null)}
-                                    className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                    className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
@@ -209,48 +210,20 @@ export default function MyCampaignsPage() {
 
                             <form onSubmit={handleUpdate} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Title</label>
-                                    <input
-                                        type="text"
-                                        value={editModal.title}
-                                        onChange={(e) => setEditModal({ ...editModal, title: e.target.value })}
-                                        className={inputClasses}
-                                    />
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Title</label>
+                                    <input type="text" value={editModal.title} onChange={(e) => setEditModal({ ...editModal, title: e.target.value })} className={inputClasses} />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Story</label>
-                                    <textarea
-                                        rows={4}
-                                        value={editModal.story}
-                                        onChange={(e) => setEditModal({ ...editModal, story: e.target.value })}
-                                        className={`${inputClasses} resize-none`}
-                                    />
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Story</label>
+                                    <textarea rows={4} value={editModal.story} onChange={(e) => setEditModal({ ...editModal, story: e.target.value })} className={`${inputClasses} resize-none`} />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Reward Info</label>
-                                    <input
-                                        type="text"
-                                        value={editModal.rewardInfo}
-                                        onChange={(e) => setEditModal({ ...editModal, rewardInfo: e.target.value })}
-                                        className={inputClasses}
-                                    />
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Reward Info</label>
+                                    <input type="text" value={editModal.rewardInfo} onChange={(e) => setEditModal({ ...editModal, rewardInfo: e.target.value })} className={inputClasses} />
                                 </div>
                                 <div className="flex gap-3 pt-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => setEditModal(null)}
-                                        className="flex-1 py-2.5 border border-gray-300 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <motion.button
-                                        type="submit"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="flex-1 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-sm font-semibold shadow-md shadow-amber-200 hover:shadow-lg hover:shadow-amber-200/60 transition-all"
-                                    >
-                                        Save Changes
-                                    </motion.button>
+                                    <button type="button" onClick={() => setEditModal(null)} className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Cancel</button>
+                                    <motion.button type="submit" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-amber-200 dark:shadow-amber-900/30 hover:shadow-lg hover:shadow-amber-200/60 dark:hover:shadow-amber-900/40 transition-all">Save Changes</motion.button>
                                 </div>
                             </form>
                         </motion.div>

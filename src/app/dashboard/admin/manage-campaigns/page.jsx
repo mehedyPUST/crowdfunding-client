@@ -58,16 +58,16 @@ export default function ManageCampaignsPage() {
     if (loading) {
         return (
             <div className="space-y-8">
-                <Skeleton width={280} height={32} />
+                <Skeleton width={280} height={32} baseColor="#e5e7eb" highlightColor="#f3f4f6" />
                 <div>
-                    <Skeleton width={180} height={24} className="mb-3" />
-                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <Skeleton width={180} height={24} className="mb-3" baseColor="#e5e7eb" highlightColor="#f3f4f6" />
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                         <TableRowSkeleton cols={4} rows={3} />
                     </div>
                 </div>
                 <div>
-                    <Skeleton width={140} height={24} className="mb-3" />
-                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <Skeleton width={140} height={24} className="mb-3" baseColor="#e5e7eb" highlightColor="#f3f4f6" />
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                         <TableRowSkeleton cols={3} rows={5} />
                     </div>
                 </div>
@@ -91,7 +91,7 @@ export default function ManageCampaignsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
             >
-                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                     <ShieldAlert className="w-6 h-6 text-amber-500" />
                     Manage Campaigns
                 </h1>
@@ -105,30 +105,30 @@ export default function ManageCampaignsPage() {
             >
                 <div className="flex items-center gap-2 mb-3">
                     <Clock className="w-5 h-5 text-amber-500" />
-                    <h2 className="font-semibold text-gray-700">Pending Approvals</h2>
+                    <h2 className="font-semibold text-gray-700 dark:text-gray-300">Pending Approvals</h2>
                     {campaigns.pending.length > 0 && (
-                        <span className="bg-amber-100 text-amber-700 text-xs font-semibold px-2 py-0.5 rounded-full">
+                        <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-semibold px-2.5 py-0.5 rounded-full">
                             {campaigns.pending.length}
                         </span>
                     )}
                 </div>
 
                 {campaigns.pending.length === 0 ? (
-                    <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-                        <p className="text-gray-400 text-sm">No pending campaigns.</p>
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 text-center">
+                        <p className="text-gray-400 dark:text-gray-500 text-sm">No pending campaigns.</p>
                     </div>
                 ) : (
-                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
                         <table className="w-full text-sm">
-                            <thead className="bg-gradient-to-r from-amber-50 to-orange-50">
+                            <thead className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20">
                                 <tr>
-                                    <th className="text-left px-4 py-3.5 text-gray-600 font-semibold">Title</th>
-                                    <th className="text-left px-4 py-3.5 hidden sm:table-cell text-gray-600 font-semibold">Creator</th>
-                                    <th className="text-left px-4 py-3.5 text-gray-600 font-semibold">Goal</th>
-                                    <th className="text-left px-4 py-3.5 text-gray-600 font-semibold">Actions</th>
+                                    <th className="text-left px-4 py-3.5 text-gray-600 dark:text-gray-400 font-semibold">Title</th>
+                                    <th className="text-left px-4 py-3.5 hidden sm:table-cell text-gray-600 dark:text-gray-400 font-semibold">Creator</th>
+                                    <th className="text-left px-4 py-3.5 text-gray-600 dark:text-gray-400 font-semibold">Goal</th>
+                                    <th className="text-left px-4 py-3.5 text-gray-600 dark:text-gray-400 font-semibold">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                                 {campaigns.pending.map((c, i) => (
                                     <motion.tr
                                         key={c._id}
@@ -136,18 +136,18 @@ export default function ManageCampaignsPage() {
                                         initial="hidden"
                                         animate="visible"
                                         custom={i}
-                                        className="hover:bg-gray-50/50 transition-colors"
+                                        className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
                                     >
-                                        <td className="px-4 py-3 font-medium text-gray-800 truncate max-w-[150px]">{c.title}</td>
-                                        <td className="px-4 py-3 hidden sm:table-cell text-gray-600">{c.creatorName}</td>
-                                        <td className="px-4 py-3 text-gray-700 font-medium">{c.fundingGoal} 🪙</td>
+                                        <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200 truncate max-w-[150px]">{c.title}</td>
+                                        <td className="px-4 py-3 hidden sm:table-cell text-gray-600 dark:text-gray-400">{c.creatorName}</td>
+                                        <td className="px-4 py-3 text-gray-700 dark:text-gray-300 font-medium">{c.fundingGoal} 🪙</td>
                                         <td className="px-4 py-3">
                                             <div className="flex gap-1">
                                                 <motion.button
                                                     onClick={() => handleApprove(c._id)}
                                                     whileHover={{ scale: 1.15 }}
                                                     whileTap={{ scale: 0.9 }}
-                                                    className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                                                    className="p-2 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
                                                     title="Approve"
                                                 >
                                                     <Check className="w-4 h-4" />
@@ -156,7 +156,7 @@ export default function ManageCampaignsPage() {
                                                     onClick={() => handleReject(c._id)}
                                                     whileHover={{ scale: 1.15 }}
                                                     whileTap={{ scale: 0.9 }}
-                                                    className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                                                    className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors"
                                                     title="Reject"
                                                 >
                                                     <X className="w-4 h-4" />
@@ -177,17 +177,17 @@ export default function ManageCampaignsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
             >
-                <h2 className="font-semibold text-gray-700 mb-3">All Campaigns</h2>
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                <h2 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">All Campaigns</h2>
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
                     <table className="w-full text-sm">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 dark:bg-gray-700/50">
                             <tr>
-                                <th className="text-left px-4 py-3.5 text-gray-600 font-semibold">Title</th>
-                                <th className="text-left px-4 py-3.5 hidden sm:table-cell text-gray-600 font-semibold">Status</th>
-                                <th className="text-left px-4 py-3.5 text-gray-600 font-semibold">Actions</th>
+                                <th className="text-left px-4 py-3.5 text-gray-600 dark:text-gray-400 font-semibold">Title</th>
+                                <th className="text-left px-4 py-3.5 hidden sm:table-cell text-gray-600 dark:text-gray-400 font-semibold">Status</th>
+                                <th className="text-left px-4 py-3.5 text-gray-600 dark:text-gray-400 font-semibold">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                             {campaigns.all.map((c, i) => (
                                 <motion.tr
                                     key={c._id}
@@ -195,15 +195,15 @@ export default function ManageCampaignsPage() {
                                     initial="hidden"
                                     animate="visible"
                                     custom={i}
-                                    className="hover:bg-gray-50/50 transition-colors"
+                                    className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
                                 >
-                                    <td className="px-4 py-3 font-medium text-gray-800 truncate max-w-[200px]">{c.title}</td>
+                                    <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200 truncate max-w-[200px]">{c.title}</td>
                                     <td className="px-4 py-3 hidden sm:table-cell">
                                         <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${c.status === 'approved'
-                                                ? 'bg-emerald-100 text-emerald-700'
+                                                ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
                                                 : c.status === 'pending'
-                                                    ? 'bg-amber-100 text-amber-700'
-                                                    : 'bg-rose-100 text-rose-700'
+                                                    ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
+                                                    : 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400'
                                             }`}>
                                             {c.status}
                                         </span>
@@ -213,7 +213,7 @@ export default function ManageCampaignsPage() {
                                             onClick={() => handleDelete(c._id)}
                                             whileHover={{ scale: 1.15 }}
                                             whileTap={{ scale: 0.9 }}
-                                            className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                                            className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors"
                                             title="Delete"
                                         >
                                             <Trash2 className="w-4 h-4" />
